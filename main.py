@@ -46,6 +46,9 @@ def addLevels(app):
     app.level0.walls.append(Wall(False, 300, 400, 80, 200))
     app.level0.walls.append(Wall(False, 0, 560, 600, 40))
 
+    app.level0.walls.append(Wall(True, 306, 283, 68, 38))
+    
+
     app.level0.walls.append(Wall(False, 0, 0, 69, 293))
     app.level0.walls.append(Wall(False, 69, 223, 112, 70))
     app.level0.walls.append(Wall(False, 456, 114, 150, 76))
@@ -85,7 +88,8 @@ def safeIndex(lst, item):
 def redrawAll(app):
     # drawImage('images\level1.png', 0, 0, width = 600, height = 600)
     for wall in app.levels[app.currentLevel].walls:
-        drawRect(wall.x, wall.y, wall.width, wall.height, fill = wall.color)
+        if wall.visible:
+            drawRect(wall.x, wall.y, wall.width, wall.height, fill = wall.color)
     for death in app.levels[app.currentLevel].deaths:
         drawRect(death.x, death.y, death.width, death.height, fill = death.color)
     for clear in app.levels[app.currentLevel].clears:
@@ -129,6 +133,11 @@ def updatePos(app):
     app.player.x += app.player.veloX
     for wall in app.levels[app.currentLevel].walls:
         if app.player.touchingWall(wall):
+            if wall.vanish:
+                print(wall.visible, wall.vanish)
+                if app.player.touchingWall(wall):
+                    if wall.visible:
+                        wall.visible = False
             if app.player.veloX > 0: 
                 app.player.x = wall.x - app.player.size
             elif app.player.veloX < 0: 
@@ -137,6 +146,11 @@ def updatePos(app):
     app.player.y += app.player.veloY
     for wall in app.levels[app.currentLevel].walls:
         if app.player.touchingWall(wall):
+            if wall.vanish:
+                print(wall.visible, wall.vanish)
+                if app.player.touchingWall(wall):
+                    if wall.visible:
+                        wall.visible = False
             if app.player.veloY > 0: 
                 app.player.y = wall.y - app.player.size
             elif app.player.veloY < 0:
@@ -150,6 +164,7 @@ def updatePos(app):
 def checkDeath(app):
     for death in app.levels[app.currentLevel].deaths:
         if app.player.touchingWall(death):
+            resetHiddenWalls(app)
             app.player.x = app.levels[app.currentLevel].resetX
             app.player.y = app.levels[app.currentLevel].resetY
             app.player.veloX = 0
@@ -182,6 +197,11 @@ def checkFallen(app):
         app.inSideDash = False
         app.hasDashed = False
 
+
+def resetHiddenWalls(app):
+    for wall in app.levels[app.currentLevel].walls:
+        if wall.vanish:
+            wall.visible = True
 
 def onStep(app):
     app.player.setHoldingWall(app.wayHoldingWall, app.levels[app.currentLevel].walls)
@@ -323,6 +343,7 @@ def onKeyHold(app, key):
 
 
     if 'r' in key:
+        resetHiddenWalls(app)
         app.player.x = app.levels[app.currentLevel].resetX
         app.player.y = app.levels[app.currentLevel].resetY
         app.player.velo = 0

@@ -70,10 +70,12 @@ class Player:
 
 
     def touchingWall(self, wall):
+        if not getattr(wall, 'visible', True):  # skip invisible walls
+            return False
         return (
-            self.x + self.size > wall.x and  # right edge of player past left edge of wall
-            self.x < wall.x + wall.width and  # left edge of player before right edge of wall
-            self.y + self.size > wall.y and  # bottom edge of player past top edge of wall
-            self.y < wall.y + wall.height  # top edge of player before bottom edge of wall
+            self.x + self.size > wall.x and
+            self.x < wall.x + wall.width and
+            self.y + self.size > wall.y and
+            self.y < wall.y + wall.height
         )
 
