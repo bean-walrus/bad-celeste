@@ -46,7 +46,7 @@ def addLevels(app):
     app.level0.walls.append(Wall(False, 300, 400, 80, 200))
     app.level0.walls.append(Wall(False, 0, 560, 600, 40))
 
-    # app.level0.walls.append(Wall(True, 306, 283, 68, 38))
+    app.level0.walls.append(Wall(True, 306, 283, 68, 38))
     
 
     app.level0.walls.append(Wall(False, 0, 0, 69, 293))
@@ -83,10 +83,17 @@ def addLevels(app):
 def safeIndex(lst, item):
     return lst.index(item) if item in lst else -1
 
+def handleWallCollision(wall):
+    if wall.vanish and wall.visible:
+        wall.visible = False
+
 def redrawAll(app):
     # drawImage('images\level1.png', 0, 0, width = 600, height = 600)
     for wall in app.levels[app.currentLevel].walls:
-        drawRect(wall.x, wall.y, wall.width, wall.height, fill = wall.color)
+        if wall.visible:
+            drawRect(wall.x, wall.y, wall.width, wall.height, fill = wall.color)
+        else:
+            drawRect(wall.x, wall.y, wall.width, wall.height, fill = wall.color, opacity = wall.opacity)
     for death in app.levels[app.currentLevel].deaths:
         drawRect(death.x, death.y, death.width, death.height, fill = death.color)
     for clear in app.levels[app.currentLevel].clears:
@@ -98,6 +105,7 @@ def checkWallVeloColide(app):
     app.player.x += app.sideWallVelo
     for wall in app.levels[app.currentLevel].walls:
         if app.player.touchingWall(wall):
+            handleWallCollision(wall)
             app.player.x = originalX
             app.sideWallVelo = 0
             break
@@ -106,9 +114,9 @@ def checkTouchingBottom(app):
     app.player.y += 1
     for wall in app.levels[app.currentLevel].walls:
         if app.player.touchingWall(wall):
+            handleWallCollision(wall)
             app.hasDashed = False
     app.player.y -= 1
-
 
 def updatePos(app):
     if abs(app.player.veloX) < 10 or not app.inSideDash: 
@@ -124,6 +132,7 @@ def updatePos(app):
     app.player.x += app.player.veloX
     for wall in app.levels[app.currentLevel].walls:
         if app.player.touchingWall(wall):
+            handleWallCollision(wall)
             if app.player.veloX > 0: 
                 app.player.x = wall.x - app.player.size
             elif app.player.veloX < 0: 
@@ -133,6 +142,7 @@ def updatePos(app):
     app.player.y += app.player.veloY
     for wall in app.levels[app.currentLevel].walls:
         if app.player.touchingWall(wall):
+            handleWallCollision(wall)
             if app.player.veloY > 0: 
                 app.player.y = wall.y - app.player.size
             elif app.player.veloY < 0:
@@ -144,6 +154,13 @@ def updatePos(app):
     else:
         app.player.veloX = 0
 
+def checkVisibleWall(app):
+    for wall in app.levels[app.currentLevel].walls:
+        if not wall.visible:
+            # Only decrease opacity if it's greater than 0
+            if wall.opacity > 0:
+                wall.opacity -= 5
+
 def checkDeath(app):
     for death in app.levels[app.currentLevel].deaths:
         if app.player.touchingWall(death):
@@ -154,6 +171,7 @@ def checkDeath(app):
             app.inWallJump = False
             app.inSideDash = False
             app.hasDashed = False
+            resetHiddenWalls(app)
 
 def checkClear(app):
     for clear in app.levels[app.currentLevel].clears:
@@ -178,6 +196,7 @@ def checkFallen(app):
         app.inWallJump = False
         app.inSideDash = False
         app.hasDashed = False
+        resetHiddenWalls(app)
 
 def monitorWallJump(app):
     if app.sideWallVelo > 0:
@@ -196,6 +215,7 @@ def setColor(app):
 def onStep(app):
     app.player.setHoldingWall(app.wayHoldingWall, app.levels[app.currentLevel].walls)
     updatePos(app)
+    checkVisibleWall(app)
     checkClear(app)
     checkFallen(app)
     checkDeath(app)
@@ -203,6 +223,12 @@ def onStep(app):
     monitorWallJump(app)
     checkTouchingBottom(app)
     setColor(app)
+
+def resetHiddenWalls(app):
+    for wall in app.levels[app.currentLevel].walls:
+        if wall.vanish:
+            wall.visible = True
+            wall.opacity = 100
 
 def onMousePress(app, mouseX, mouseY):
     if app.counter == 0:
@@ -222,6 +248,7 @@ def onKeyPress(app, key):
             app.player.x -= 1
             for wall in app.levels[app.currentLevel].walls:
                 if app.player.touchingWall(wall):
+                    handleWallCollision(wall)
                     app.sideWallVelo += 22
                     app.player.jump(app.levels[app.currentLevel].walls, app.wallJumpHeight)
                     app.inWallJump = True
@@ -231,6 +258,7 @@ def onKeyPress(app, key):
             app.player.x += 1
             for wall in app.levels[app.currentLevel].walls:
                 if app.player.touchingWall(wall):
+                    handleWallCollision(wall)
                     app.sideWallVelo -= 22
                     app.player.jump(app.levels[app.currentLevel].walls, app.wallJumpHeight)
                     app.inWallJump = True
@@ -288,6 +316,7 @@ def onKeyHold(app, key):
                     hitWall = False
                     for wall in app.levels[app.currentLevel].walls:
                         if app.player.touchingWall(wall):
+                            handleWallCollision(wall)
                             hitWall = True
                             break
                     if hitWall:
@@ -308,6 +337,7 @@ def onKeyHold(app, key):
                     hitWall = False
                     for wall in app.levels[app.currentLevel].walls:
                         if app.player.touchingWall(wall):
+                            handleWallCollision(wall)
                             hitWall = True
                             break
                     if hitWall:
@@ -331,6 +361,7 @@ def onKeyHold(app, key):
         app.inWallJump = False
         app.inSideDash = False
         app.hasDashed = False
+        resetHiddenWalls(app)
 
 def onKeyRelease(app, key):
     if key in app.keysHeld:

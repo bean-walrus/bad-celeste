@@ -70,7 +70,7 @@ class Player:
 
 
     def touchingWall(self, wall):
-        if not getattr(wall, 'visible', True):  # skip invisible walls
+        if getattr(wall, 'opacity', 100) <= 0:
             return False
         return (
             self.x + self.size > wall.x and

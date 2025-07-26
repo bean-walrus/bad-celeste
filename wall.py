@@ -6,3 +6,5 @@ class Wall:
         self.width = width
         self.height = height
         self.color = 'darkGray'
+        self.visible = True
+        self.opacity = 100
