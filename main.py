@@ -101,6 +101,8 @@ def checkWallVeloColide(app):
     app.player.x += app.sideWallVelo
     for wall in app.levels[app.currentLevel].walls:
         if app.player.touchingWall(wall):
+            if wall.vanish:
+                wall.visible = False
             app.player.x = originalX
             app.sideWallVelo = 0
             break
@@ -115,6 +117,8 @@ def checkTouchingBottom(app):
     app.player.y += 1
     for wall in app.levels[app.currentLevel].walls:
         if app.player.touchingWall(wall):
+            if wall.vanish:
+                wall.visible = False
             app.hasDashed = False
     app.player.y -= 1
 
@@ -134,10 +138,8 @@ def updatePos(app):
     for wall in app.levels[app.currentLevel].walls:
         if app.player.touchingWall(wall):
             if wall.vanish:
-                print(wall.visible, wall.vanish)
-                if app.player.touchingWall(wall):
-                    if wall.visible:
-                        wall.visible = False
+                if wall.visible:
+                    wall.visible = False
             if app.player.veloX > 0: 
                 app.player.x = wall.x - app.player.size
             elif app.player.veloX < 0: 
@@ -147,10 +149,7 @@ def updatePos(app):
     for wall in app.levels[app.currentLevel].walls:
         if app.player.touchingWall(wall):
             if wall.vanish:
-                print(wall.visible, wall.vanish)
-                if app.player.touchingWall(wall):
-                    if wall.visible:
-                        wall.visible = False
+                wall.visible = False
             if app.player.veloY > 0: 
                 app.player.y = wall.y - app.player.size
             elif app.player.veloY < 0:
@@ -240,6 +239,8 @@ def onKeyPress(app, key):
             app.player.x -= 1
             for wall in app.levels[app.currentLevel].walls:
                 if app.player.touchingWall(wall):
+                    if wall.vanish:
+                        wall.visible = False
                     app.sideWallVelo += 22
                     app.player.jump(app.levels[app.currentLevel].walls, app.wallJumpHeight)
                     app.inWallJump = True
@@ -249,6 +250,8 @@ def onKeyPress(app, key):
             app.player.x += 1
             for wall in app.levels[app.currentLevel].walls:
                 if app.player.touchingWall(wall):
+                    if wall.vanish:
+                        wall.visible = False
                     app.sideWallVelo -= 22
                     app.player.jump(app.levels[app.currentLevel].walls, app.wallJumpHeight)
                     app.inWallJump = True
@@ -306,6 +309,8 @@ def onKeyHold(app, key):
                     hitWall = False
                     for wall in app.levels[app.currentLevel].walls:
                         if app.player.touchingWall(wall):
+                            if wall.vanish:
+                                wall.visible = False
                             hitWall = True
                             break
                     if hitWall:
@@ -326,6 +331,8 @@ def onKeyHold(app, key):
                     hitWall = False
                     for wall in app.levels[app.currentLevel].walls:
                         if app.player.touchingWall(wall):
+                            if wall.vanish:
+                                wall.visible = False
                             hitWall = True
                             break
                     if hitWall:
