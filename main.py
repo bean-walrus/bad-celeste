@@ -2,6 +2,7 @@ from cmu_graphics import *
 from player import Player
 from wall import Wall
 from death import Death
+from spring import Spring
 from clear import Clear
 from level import Level
 
@@ -36,7 +37,7 @@ def onAppStart(app):
 
 def addLevels(app):
     # Level 0
-    app.level0 = Level([], [], [], 31, 400)
+    app.level0 = Level([], [], [], [], 31, 400)
     app.levels.append(app.level0)
 
     app.player.x = app.levels[app.currentLevel].resetX
@@ -46,7 +47,9 @@ def addLevels(app):
     app.level0.walls.append(Wall(False, 300, 400, 80, 200))
     app.level0.walls.append(Wall(False, 0, 560, 600, 40))
 
-    app.level0.walls.append(Wall(True, 306, 283, 68, 38))
+    app.level0.walls.append(Wall(True, 306, 373, 68, 38))
+
+    app.level0.springs.append(Spring(306, 300, 68, 38))
     
 
     app.level0.walls.append(Wall(False, 0, 0, 69, 293))
@@ -61,7 +64,7 @@ def addLevels(app):
     app.level0.clears.append(Clear(434, 0, 130, 1))
 
     # Level 1
-    app.level1 = Level([], [], [], 50, 500)
+    app.level1 = Level([], [], [], [], 50, 500)
     app.levels.append(app.level1)
 
 
@@ -90,12 +93,14 @@ def handleWallCollision(wall):
 def redrawAll(app):
     # drawImage('images\level1.png', 0, 0, width = 600, height = 600)
     for wall in app.levels[app.currentLevel].walls:
-        if wall.visible:
+        if wall.visible and not wall.vanish:
             drawRect(wall.x, wall.y, wall.width, wall.height, fill = wall.color)
         else:
             drawRect(wall.x, wall.y, wall.width, wall.height, fill = wall.color, opacity = wall.opacity)
     for death in app.levels[app.currentLevel].deaths:
         drawRect(death.x, death.y, death.width, death.height, fill = death.color)
+    for spring in app.levels[app.currentLevel].springs:
+        drawRect(spring.x, spring.y, spring.width, spring.height, fill = spring.color)
     for clear in app.levels[app.currentLevel].clears:
         drawRect(clear.x, clear.y, clear.width, clear.height, fill = clear.color, opacity = 0)
     drawRect(app.player.x, app.player.y, app.player.size, app.player.size, fill = app.player.fill)
@@ -157,9 +162,19 @@ def updatePos(app):
 def checkVisibleWall(app):
     for wall in app.levels[app.currentLevel].walls:
         if not wall.visible:
-            # Only decrease opacity if it's greater than 0
+            print(wall.timer)
             if wall.opacity > 0:
                 wall.opacity -= 5
+            elif 0 <= wall.timer <= 100:
+                wall.timer -= 1
+            else:
+                wall.visible = True
+                wall.opacity = 100
+                wall.timer = 100
+                if app.player.touchingWall(wall):
+                    wall.visible = False
+                    wall.opacity = 0
+                    wall.timer = 0
 
 def checkDeath(app):
     for death in app.levels[app.currentLevel].deaths:
@@ -172,6 +187,11 @@ def checkDeath(app):
             app.inSideDash = False
             app.hasDashed = False
             resetHiddenWalls(app)
+
+def checkSpring(app):
+    for spring in app.levels[app.currentLevel].springs:
+        if app.player.touchingWall(spring):
+            app.player.jump(app.levels[app.currentLevel].springs, app.jumpHeight * 1.4)
 
 def checkClear(app):
     for clear in app.levels[app.currentLevel].clears:
@@ -219,6 +239,7 @@ def onStep(app):
     checkClear(app)
     checkFallen(app)
     checkDeath(app)
+    checkSpring(app)
     checkWallVeloColide(app)
     monitorWallJump(app)
     checkTouchingBottom(app)
@@ -229,6 +250,7 @@ def resetHiddenWalls(app):
         if wall.vanish:
             wall.visible = True
             wall.opacity = 100
+            wall.timer = 100
 
 def onMousePress(app, mouseX, mouseY):
     if app.counter == 0:
