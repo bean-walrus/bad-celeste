@@ -49,7 +49,7 @@ def addLevels(app):
 
     app.level0.walls.append(Wall(True, 306, 373, 68, 38))
 
-    app.level0.springs.append(Spring(306, 300, 68, 38))
+    app.level0.springs.append(Spring(250, 300, 68, 38))
     
 
     app.level0.walls.append(Wall(False, 0, 0, 69, 293))
@@ -81,7 +81,7 @@ def addLevels(app):
 
     app.level1.deaths.append(Death(262, 216, 37, 10))
 
-    app.level1.clears.append(Clear(434, 1, 128, 1))      # Top left goal
+    app.level1.clears.append(Clear(434, 1, 128, 1))
 
 def safeIndex(lst, item):
     return lst.index(item) if item in lst else -1
@@ -91,7 +91,7 @@ def handleWallCollision(wall):
         wall.visible = False
 
 def redrawAll(app):
-    # drawImage('images\level1.png', 0, 0, width = 600, height = 600)
+    drawImage('images\level2.png', 0, 0, width = 600, height = 600)
     for wall in app.levels[app.currentLevel].walls:
         if wall.visible and not wall.vanish:
             drawRect(wall.x, wall.y, wall.width, wall.height, fill = wall.color)
@@ -192,6 +192,7 @@ def checkSpring(app):
     for spring in app.levels[app.currentLevel].springs:
         if app.player.touchingWall(spring):
             app.player.jump(app.levels[app.currentLevel].springs, app.jumpHeight * 1.4)
+            app.hasDashed = False
 
 def checkClear(app):
     for clear in app.levels[app.currentLevel].clears:
