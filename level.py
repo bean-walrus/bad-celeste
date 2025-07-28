@@ -1,8 +1,9 @@
 class Level:
-    def __init__(self, walls, deaths, springs, clears, resetX, resetY):
-        self.walls = walls
-        self.deaths = deaths
-        self.springs = springs
-        self.clears = clears
+    def __init__(self, resetX, resetY):
+        self.walls = []
+        self.deaths = []
+        self.springs = []
+        self.recharges = []
+        self.clears = []
         self.resetX = resetX
         self.resetY = resetY

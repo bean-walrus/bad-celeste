@@ -3,6 +3,7 @@ from player import Player
 from wall import Wall
 from death import Death
 from spring import Spring
+from recharge import Recharge
 from clear import Clear
 from level import Level
 
@@ -37,7 +38,7 @@ def onAppStart(app):
 
 def addLevels(app):
     # Level 0
-    app.level0 = Level([], [], [], [], 31, 400)
+    app.level0 = Level(31, 400)
     app.levels.append(app.level0)
 
     app.player.x = app.levels[app.currentLevel].resetX
@@ -64,7 +65,7 @@ def addLevels(app):
     app.level0.clears.append(Clear(434, 0, 130, 1))
 
     # Level 1
-    app.level1 = Level([], [], [], [], 50, 500)
+    app.level1 = Level(50, 500)
     app.levels.append(app.level1)
 
 
@@ -84,7 +85,7 @@ def addLevels(app):
     app.level1.clears.append(Clear(434, 1, 128, 1))
 
     #Level 2
-    app.level2 = Level([], [], [], [], 31, 470)
+    app.level2 = Level(31, 470)
     app.levels.append(app.level2)
 
     app.level2.walls.append(Wall(False, 188, 562, 37, 38))
@@ -110,18 +111,48 @@ def addLevels(app):
 
     app.level2.clears.append(Clear(299, 0, 175, 1))
 
-    
-    
+    #Level 3
+    app.level3 = Level(38, 384)
+    app.levels.append(app.level3)
+
+    app.level3.walls.append(Wall(False, 0, 450, 146, 150))
+    app.level3.walls.append(Wall(False, 0, 0, 82, 150))
+    app.level3.walls.append(Wall(False, 0, 119, 190, 41))
+    app.level3.walls.append(Wall(False, 186, 0, 414, 38))
+    app.level3.walls.append(Wall(False, 559, 0, 41, 186))
+    app.level3.walls.append(Wall(False, 449, 490, 151, 110))
+    app.level3.walls.append(Wall(False, 225, 280, 70, 336))
+    app.level3.walls.append(Wall(False, 375, 189, 74, 151))
+    app.level3.walls.append(Wall(False, 417, 299, 66, 71))
+
+    app.level3.deaths.append(Death(225, 259, 70, 21))
+    app.level3.deaths.append(Death(375, 168, 74, 21))
+
+    app.level3.clears.append(Clear(82, 0, 104, 2))
+
+    #Level 4
+    app.level4 = Level(10,442)
+    app.levels.append(app.level4)
+
+    app.level4.walls.append(Wall(False, 0, 500, 600, 100))
+
+    app.level4.recharges.append(Recharge(200, 350, 35, 35))  
 
 def safeIndex(lst, item):
     return lst.index(item) if item in lst else -1
 
-def handleWallCollision(wall):
+def checkVisibleWall(wall):
     if wall.vanish and wall.visible:
         wall.visible = False
 
+def checkRecharge(app):
+    for recharge in app.levels[app.currentLevel].recharges:
+        if app.player.touchingWall(recharge):
+            recharge.visible = False
+            app.hasDashed = False
+
 def redrawAll(app):
-    # drawImage('bad-celeste\images\level2.png', 0, 0, width = 600, height = 600)
+    # drawImage('bad-celeste\images\level3.png', 0, 0, width = 600, height = 600)
     for wall in app.levels[app.currentLevel].walls:
         if wall.visible and not wall.vanish:
             drawRect(wall.x, wall.y, wall.width, wall.height, fill = wall.color)
@@ -131,6 +162,9 @@ def redrawAll(app):
         drawRect(death.x, death.y, death.width, death.height, fill = death.color)
     for spring in app.levels[app.currentLevel].springs:
         drawRect(spring.x, spring.y, spring.width, spring.height, fill = spring.color)
+    for recharge in app.levels[app.currentLevel].recharges:
+        if recharge.visible:
+            drawRect(recharge.x, recharge.y, recharge.sideLength, recharge.sideLength, rotateAngle = 45, fill = 'lime', align = 'left-top')
     for clear in app.levels[app.currentLevel].clears:
         drawRect(clear.x, clear.y, clear.width, clear.height, fill = clear.color, opacity = 0)
     drawRect(app.player.x, app.player.y, app.player.size, app.player.size, fill = app.player.fill)
@@ -140,7 +174,7 @@ def checkWallVeloColide(app):
     app.player.x += app.sideWallVelo
     for wall in app.levels[app.currentLevel].walls:
         if app.player.touchingWall(wall):
-            handleWallCollision(wall)
+            checkVisibleWall(wall)
             app.player.x = originalX
             app.sideWallVelo = 0
             break
@@ -149,7 +183,7 @@ def checkTouchingBottom(app):
     app.player.y += 1
     for wall in app.levels[app.currentLevel].walls:
         if app.player.touchingWall(wall):
-            handleWallCollision(wall)
+            checkVisibleWall(wall)
             app.hasDashed = False
     app.player.y -= 1
 
@@ -167,7 +201,7 @@ def updatePos(app):
     app.player.x += app.player.veloX
     for wall in app.levels[app.currentLevel].walls:
         if app.player.touchingWall(wall):
-            handleWallCollision(wall)
+            checkVisibleWall(wall)
             if app.player.veloX > 0: 
                 app.player.x = wall.x - app.player.size
             elif app.player.veloX < 0: 
@@ -177,7 +211,7 @@ def updatePos(app):
     app.player.y += app.player.veloY
     for wall in app.levels[app.currentLevel].walls:
         if app.player.touchingWall(wall):
-            handleWallCollision(wall)
+            checkVisibleWall(wall)
             if app.player.veloY > 0: 
                 app.player.y = wall.y - app.player.size
             elif app.player.veloY < 0:
@@ -189,10 +223,18 @@ def updatePos(app):
     else:
         app.player.veloX = 0
 
-def checkVisibleWall(app):
+def checkRechargeTimer(app):
+    for recharge in app.levels[app.currentLevel].recharges:
+        if not recharge.visible:
+            if 0 <= recharge.timer <= 100:
+                recharge.timer -= 1.5
+            else:
+                recharge.visible = True
+                recharge.timer = 100
+
+def checkVisibleWallTimer(app):
     for wall in app.levels[app.currentLevel].walls:
         if not wall.visible:
-            print(wall.timer)
             if wall.opacity > 0:
                 wall.opacity -= 5
             elif 0 <= wall.timer <= 100:
@@ -266,11 +308,13 @@ def setColor(app):
 def onStep(app):
     app.player.setHoldingWall(app.wayHoldingWall, app.levels[app.currentLevel].walls)
     updatePos(app)
-    checkVisibleWall(app)
+    checkVisibleWallTimer(app)
+    checkRechargeTimer(app)
     checkClear(app)
     checkFallen(app)
     checkDeath(app)
     checkSpring(app)
+    checkRecharge(app)
     checkWallVeloColide(app)
     monitorWallJump(app)
     checkTouchingBottom(app)
@@ -282,6 +326,8 @@ def resetHiddenWalls(app):
             wall.visible = True
             wall.opacity = 100
             wall.timer = 100
+    for recharge in app.levels[app.currentLevel].recharges:
+        recharge.visible = True
 
 def onMousePress(app, mouseX, mouseY):
     if app.counter == 0:
@@ -301,7 +347,7 @@ def onKeyPress(app, key):
             app.player.x -= 1
             for wall in app.levels[app.currentLevel].walls:
                 if app.player.touchingWall(wall):
-                    handleWallCollision(wall)
+                    checkVisibleWall(wall)
                     app.sideWallVelo += 22
                     app.player.jump(app.levels[app.currentLevel].walls, app.wallJumpHeight)
                     app.inWallJump = True
@@ -311,7 +357,7 @@ def onKeyPress(app, key):
             app.player.x += 1
             for wall in app.levels[app.currentLevel].walls:
                 if app.player.touchingWall(wall):
-                    handleWallCollision(wall)
+                    checkVisibleWall(wall)
                     app.sideWallVelo -= 22
                     app.player.jump(app.levels[app.currentLevel].walls, app.wallJumpHeight)
                     app.inWallJump = True
@@ -369,7 +415,7 @@ def onKeyHold(app, key):
                     hitWall = False
                     for wall in app.levels[app.currentLevel].walls:
                         if app.player.touchingWall(wall):
-                            handleWallCollision(wall)
+                            checkVisibleWall(wall)
                             hitWall = True
                             break
                     if hitWall:
@@ -390,7 +436,7 @@ def onKeyHold(app, key):
                     hitWall = False
                     for wall in app.levels[app.currentLevel].walls:
                         if app.player.touchingWall(wall):
-                            handleWallCollision(wall)
+                            checkVisibleWall(wall)
                             hitWall = True
                             break
                     if hitWall:
