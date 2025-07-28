@@ -1,46 +1,30 @@
-import copy
+def getQuizAverages(scores):
+    total = dict()
+    count = dict()
+    for person in scores:
+        for quiz in scores[person]:
+            if quiz not in total:
+                total[quiz] = scores[person][quiz]
+                count[quiz] = 1
+            else:
+                total[quiz] += scores[person][quiz]
+                count[quiz] += 1
+    toReturn = dict()
+    for quiz in total:
+        if quiz not in toReturn:
+            toReturn[quiz] = total[quiz] // count[quiz]
+    return toReturn
 
-def permuteWithNoAdjacent(L):
-    a = copy.copy(L)
-    return solve(a, [])
-    
-def solve(L, toReturn):
-    if L == []:
-        return toReturn
-    else:
-        for i in range(len(L)):
-            if isLegal(toReturn, L[i]):
-                toReturn.append(L[i])
-                L.pop(i)
-                maybeSolved = solve(L, toReturn)
-                if maybeSolved != None:
-                    return maybeSolved
-                L.insert(i, toReturn.pop())
-        return None
-    
-def isLegal(toReturn, val):
-    return toReturn == [] or abs(toReturn[len(toReturn) - 1] - val) != 1
 
-def isValidPermutation(L):
-    return all(abs(L[i] - L[i+1]) != 1 for i in range(len(L)-1))
+scores = {
+ 'Ann': { 'quiz1': 90, 'quiz2': 80, 'quiz3': 85 },
+ 'Ben': { 'quiz1': 70, 'quiz3': 95 },
+ 'Cam': { 'quiz2': 90 },
+ 'Del': dict(),
+ }
 
-result = permuteWithNoAdjacent([1, 4, 6])
-assert result is not None
-assert sorted(result) == [1, 4, 6]
-assert isValidPermutation(result)
+print(getQuizAverages(scores))
 
-# ❌ Should return None (no valid permutation exists)
-assert permuteWithNoAdjacent([1, 2]) is None
-assert permuteWithNoAdjacent([1, 2, 3]) is None
-
-# ✅ Edge cases
-assert permuteWithNoAdjacent([]) == []
-assert permuteWithNoAdjacent([5]) == [5]
-
-# ✅ Another valid test
-result = permuteWithNoAdjacent([2, 4, 6])
-assert result is not None
-assert sorted(result) == [2, 4, 6]
-assert isValidPermutation(result)
-
-print("All tests passed!")
+assert(getQuizAverages(scores) == { 'quiz1': 80,
+                                    'quiz2': 85,
+                                    'quiz3': 90})

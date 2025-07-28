@@ -47,9 +47,9 @@ def addLevels(app):
     app.level0.walls.append(Wall(False, 300, 400, 80, 200))
     app.level0.walls.append(Wall(False, 0, 560, 600, 40))
 
-    app.level0.walls.append(Wall(True, 306, 373, 68, 38))
+    # app.level0.walls.append(Wall(True, 306, 373, 68, 38))
 
-    app.level0.springs.append(Spring(250, 300, 68, 38))
+    # app.level0.springs.append(Spring(250, 300, 68, 38))
     
 
     app.level0.walls.append(Wall(False, 0, 0, 69, 293))
@@ -83,6 +83,36 @@ def addLevels(app):
 
     app.level1.clears.append(Clear(434, 1, 128, 1))
 
+    #Level 2
+    app.level2 = Level([], [], [], [], 31, 470)
+    app.levels.append(app.level2)
+
+    app.level2.walls.append(Wall(False, 188, 562, 37, 38))
+    app.level2.walls.append(Wall(False, 263, 450, 148, 35))
+    app.level2.walls.append(Wall(False, 301, 482, 73, 118))
+    app.level2.walls.append(Wall(False, 488, 562, 110, 38))
+    app.level2.walls.append(Wall(False, 526, 298, 74, 296))
+    app.level2.walls.append(Wall(False, 0, 0, 185, 184))
+    app.level2.walls.append(Wall(False, 132, 0, 167, 37))
+    app.level2.walls.append(Wall(False, 0, 180, 263, 111))
+    app.level2.walls.append(Wall(False, 259, 253, 152, 38))
+    app.level2.walls.append(Wall(False, 0, 525, 110, 75))
+
+    app.level2.walls.append(Wall(False, 474, 0, 126, 116))
+    app.level2.walls.append(Wall(False, 587, 115, 13, 185))
+    app.level2.walls.append(Wall(False, 261, 290, 150, 35))
+
+    app.level2.deaths.append(Death(263, 434, 148, 16))
+    app.level2.deaths.append(Death(263, 237, 148, 16))
+
+    app.level2.springs.append(Spring(188, 552, 37, 10))
+    app.level2.springs.append(Spring(488, 552, 38, 10))
+
+    app.level2.clears.append(Clear(299, 0, 175, 1))
+
+    
+    
+
 def safeIndex(lst, item):
     return lst.index(item) if item in lst else -1
 
@@ -91,7 +121,7 @@ def handleWallCollision(wall):
         wall.visible = False
 
 def redrawAll(app):
-    drawImage('images\level2.png', 0, 0, width = 600, height = 600)
+    # drawImage('bad-celeste\images\level2.png', 0, 0, width = 600, height = 600)
     for wall in app.levels[app.currentLevel].walls:
         if wall.visible and not wall.vanish:
             drawRect(wall.x, wall.y, wall.width, wall.height, fill = wall.color)
@@ -260,7 +290,7 @@ def onMousePress(app, mouseX, mouseY):
     elif app.counter == 1:
         app.rW = mouseX - app.rX
         app.rH = mouseY - app.rY
-        print(f'app.level0.walls.append(Wall(False, {app.rX}, {app.rY}, {app.rW}, {app.rH}))')
+        print(f'app.level2.walls.append(Wall(False, {app.rX}, {app.rY}, {app.rW}, {app.rH}))')
     app.counter += 1
     if app.counter == 2:
         app.counter = 0
