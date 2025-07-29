@@ -1,11 +1,12 @@
 from cmu_graphics import *
 from player import Player
-from wall import Wall
+from wall import *
 from death import Death
-from spring import Spring
+from spring import *
 from recharge import Recharge
 from clear import Clear
 from level import Level
+import random
 
 def onAppStart(app):
     app.player = Player()
@@ -44,20 +45,20 @@ def addLevels(app):
     app.player.x = app.levels[app.currentLevel].resetX
     app.player.y = app.levels[app.currentLevel].resetY
 
-    app.level0.walls.append(Wall(False, 0, 486, 180, 112))
-    app.level0.walls.append(Wall(False, 300, 400, 80, 200))
-    app.level0.walls.append(Wall(False, 0, 560, 600, 40))
+    app.level0.walls.append(Wall(0, 486, 180, 112))
+    app.level0.walls.append(Wall(300, 400, 80, 200))
+    app.level0.walls.append(Wall(0, 560, 600, 40))
 
-    # app.level0.walls.append(Wall(True, 306, 373, 68, 38))
+    # app.level0.walls.append(VanishWall(306, 373, 68, 38))
 
     # app.level0.springs.append(Spring(250, 300, 68, 38))
     
 
-    app.level0.walls.append(Wall(False, 0, 0, 69, 293))
-    app.level0.walls.append(Wall(False, 69, 223, 112, 70))
-    app.level0.walls.append(Wall(False, 456, 114, 150, 76))
-    app.level0.walls.append(Wall(False, 564, 0, 36, 600))
-    app.level0.walls.append(Wall(False, 0, 0, 434, 30))
+    app.level0.walls.append(Wall(0, 0, 69, 293))
+    app.level0.walls.append(Wall(69, 223, 112, 70))
+    app.level0.walls.append(Wall(456, 114, 150, 76))
+    app.level0.walls.append(Wall(564, 0, 36, 600))
+    app.level0.walls.append(Wall(0, 0, 434, 30))
 
     app.level0.deaths.append(Death(180, 544, 120, 20))
     app.level0.deaths.append(Death(380, 541, 184, 20))
@@ -69,16 +70,16 @@ def addLevels(app):
     app.levels.append(app.level1)
 
 
-    app.level1.walls.append(Wall(False, 0, 562, 276, 38))
-    app.level1.walls.append(Wall(False, 0, 263, 147, 184))
-    app.level1.walls.append(Wall(False, 0, 0, 41, 264))
-    app.level1.walls.append(Wall(False, 0, 0, 433, 41))
-    app.level1.walls.append(Wall(False, 393, 0, 41, 217))
-    app.level1.walls.append(Wall(False, 262, 226, 37, 374))
-    # app.level1.walls.append(Wall(False, 297, 525, 114, 73))
-    app.level1.walls.append(Wall(False, 562, 0, 38, 410))
-    app.level1.walls.append(Wall(False, 522, 225, 40, 185))
-    app.level1.walls.append(Wall(False, 459, 346, 99, 64))
+    app.level1.walls.append(Wall(0, 562, 276, 38))
+    app.level1.walls.append(Wall(0, 263, 147, 184))
+    app.level1.walls.append(Wall(0, 0, 41, 264))
+    app.level1.walls.append(Wall(0, 0, 433, 41))
+    app.level1.walls.append(Wall(393, 0, 41, 217))
+    app.level1.walls.append(Wall(262, 226, 37, 374))
+    # app.level1.walls.append(Wall(297, 525, 114, 73))
+    app.level1.walls.append(Wall(562, 0, 38, 410))
+    app.level1.walls.append(Wall(522, 225, 40, 185))
+    app.level1.walls.append(Wall(459, 346, 99, 64))
 
     app.level1.deaths.append(Death(262, 216, 37, 10))
 
@@ -88,20 +89,20 @@ def addLevels(app):
     app.level2 = Level(31, 470)
     app.levels.append(app.level2)
 
-    app.level2.walls.append(Wall(False, 188, 562, 37, 38))
-    app.level2.walls.append(Wall(False, 263, 450, 148, 35))
-    app.level2.walls.append(Wall(False, 301, 482, 73, 118))
-    app.level2.walls.append(Wall(False, 488, 562, 110, 38))
-    app.level2.walls.append(Wall(False, 526, 298, 74, 296))
-    app.level2.walls.append(Wall(False, 0, 0, 185, 184))
-    app.level2.walls.append(Wall(False, 132, 0, 167, 37))
-    app.level2.walls.append(Wall(False, 0, 180, 263, 111))
-    app.level2.walls.append(Wall(False, 259, 253, 152, 38))
-    app.level2.walls.append(Wall(False, 0, 525, 110, 75))
+    app.level2.walls.append(Wall(188, 562, 37, 38))
+    app.level2.walls.append(Wall(263, 450, 148, 35))
+    app.level2.walls.append(Wall(301, 482, 73, 118))
+    app.level2.walls.append(Wall(488, 562, 110, 38))
+    app.level2.walls.append(Wall(526, 298, 74, 296))
+    app.level2.walls.append(Wall(0, 0, 185, 184))
+    app.level2.walls.append(Wall(132, 0, 167, 37))
+    app.level2.walls.append(Wall(0, 180, 263, 111))
+    app.level2.walls.append(Wall(259, 253, 152, 38))
+    app.level2.walls.append(Wall(0, 525, 110, 75))
 
-    app.level2.walls.append(Wall(False, 474, 0, 126, 116))
-    app.level2.walls.append(Wall(False, 587, 115, 13, 185))
-    app.level2.walls.append(Wall(False, 261, 290, 150, 35))
+    app.level2.walls.append(Wall(474, 0, 126, 116))
+    app.level2.walls.append(Wall(587, 115, 13, 185))
+    app.level2.walls.append(Wall(261, 290, 150, 35))
 
     app.level2.deaths.append(Death(263, 434, 148, 16))
     app.level2.deaths.append(Death(263, 237, 148, 16))
@@ -115,15 +116,15 @@ def addLevels(app):
     app.level3 = Level(38, 384)
     app.levels.append(app.level3)
 
-    app.level3.walls.append(Wall(False, 0, 450, 146, 150))
-    app.level3.walls.append(Wall(False, 0, 0, 82, 130))
-    app.level3.walls.append(Wall(False, 0, 100, 245, 35))
-    app.level3.walls.append(Wall(False, 186, 0, 414, 24))
-    app.level3.walls.append(Wall(False, 559, 0, 41, 186))
-    app.level3.walls.append(Wall(False, 449, 490, 151, 110))
-    app.level3.walls.append(Wall(False, 225, 280, 70, 336))
-    app.level3.walls.append(Wall(False, 375, 189, 74, 151))
-    app.level3.walls.append(Wall(False, 417, 299, 66, 71))
+    app.level3.walls.append(Wall(0, 450, 146, 150))
+    app.level3.walls.append(Wall(0, 0, 82, 130))
+    app.level3.walls.append(Wall(0, 100, 245, 35))
+    app.level3.walls.append(Wall(186, 0, 414, 24))
+    app.level3.walls.append(Wall(559, 0, 41, 186))
+    app.level3.walls.append(Wall(449, 490, 151, 110))
+    app.level3.walls.append(Wall(225, 280, 70, 336))
+    app.level3.walls.append(Wall(375, 189, 74, 151))
+    app.level3.walls.append(Wall(417, 299, 66, 71))
 
     app.level3.deaths.append(Death(225, 259, 70, 21))
     app.level3.deaths.append(Death(375, 168, 74, 21))
@@ -131,40 +132,91 @@ def addLevels(app):
     app.level3.clears.append(Clear(82, 0, 104, 2))
 
     #Level 4
-    app.level4 = Level(10,442)
+    app.level4 = Level(10,377)
     app.levels.append(app.level4)
 
-    app.level4.walls.append(Wall(False, 0, 450, 109, 150))
-    app.level4.walls.append(Wall(False, 103, 487, 159, 113))
-    app.level4.walls.append(Wall(False, 373, 487, 227, 113))
-    app.level4.walls.append(Wall(False, 526, 0, 74, 299))
-    app.level4.walls.append(Wall(False, 490, 260, 110, 40))
-    app.level4.walls.append(Wall(False, 0, 0, 447, 145))
-    app.level4.walls.append(Wall(False, 0, 133, 336, 51))
+    app.level4.walls.append(Wall(0, 450, 109, 150))
+    app.level4.walls.append(Wall(103, 487, 159, 113))
+    app.level4.walls.append(Wall(373, 487, 227, 113))
+    app.level4.walls.append(Wall(526, 0, 74, 299))
+    app.level4.walls.append(Wall(490, 260, 110, 40))
+    app.level4.walls.append(Wall(0, 0, 447, 145))
+    app.level4.walls.append(Wall(0, 133, 336, 51))
 
     app.level4.recharges.append(Recharge(300, 300, 35, 35)) 
 
     app.level4.clears.append(Clear(446, 0, 80, 2)) 
 
+    #Level 5
+    app.level5 = Level(10,524)
+    app.levels.append(app.level5)
+
+    app.level5.walls.append(Wall(0, 0, 37, 302))
+    app.level5.walls.append(Wall(18, 227, 65, 75))
+    app.level5.walls.append(Wall(0, 566, 150, 34))
+    app.level5.walls.append(Wall(187, 0, 413, 73))
+    app.level5.walls.append(Wall(525, 72, 75, 193))
+
+    app.level5.walls.append(VanishWall(226, 528, 38, 38))
+    app.level5.walls.append(VanishWall(264, 528, 38, 38))
+    app.level5.walls.append(VanishWall(302, 528, 38, 38))
+    app.level5.walls.append(VanishWall(450, 490, 38, 38))
+    app.level5.walls.append(VanishWall(525, 265, 38, 38))
+    app.level5.walls.append(VanishWall(525, 303, 38, 38))
+
+    app.level5.deaths.append(Death(37, 220, 46, 8))
+    app.level5.springs.append(VanishSpring(450, 482, 38, 8))
+
+    app.level5.recharges.append(Recharge(250, 144, 35, 35)) 
+
+    app.level5.clears.append(Clear(37, 0, 150, 2))
+
+    #Level 6
+    app.level6 = Level(80,380)
+    app.levels.append(app.level6)
+
+    app.level6.walls.append(Wall(0, 565, 600, 75))
+    app.level6.walls.append(Wall(326, 585, 274, 35))
+    app.level6.walls.append(Wall(0, 0, 70, 200))
+    app.level6.walls.append(Wall(74, 480, 36, 100))
+    app.level6.walls.append(Wall(530, 0, 70, 200))
+    app.level6.walls.append(Wall(190, 0, 600, 70))
+    app.level6.walls.append(Wall(414, 516, 84, 64))
+    app.level6.walls.append(Wall(190, 0, 70, 150))
+
+    app.level6.deaths.append(Death(0, 545, 74, 21))
+    app.level6.deaths.append(Death(110, 545, 304, 21))
+    app.level6.deaths.append(Death(498, 545, 102, 21))
+
+    app.level6.springs.append(Spring(414, 505, 84, 11))
+
+    app.level6.recharges.append(Recharge(372, 100, 38, 38))
+    app.level6.clears.append(Clear(70, 0, 120, 2))
+
+
 def safeIndex(lst, item):
     return lst.index(item) if item in lst else -1
 
 def redrawAll(app):
-    # drawImage('bad-celeste\images\level4.png', 0, 0, width = 600, height = 600)
+    # drawImage('bad-celeste\images\level6.png', 0, 0, width = 600, height = 600)
     for wall in app.levels[app.currentLevel].walls:
-        if wall.visible and not wall.vanish:
-            drawRect(wall.x, wall.y, wall.width, wall.height, fill = wall.color)
-        else:
+        if isinstance(wall, VanishWall):
             drawRect(wall.x, wall.y, wall.width, wall.height, fill = wall.color, opacity = wall.opacity)
+        else:
+            drawRect(wall.x, wall.y, wall.width, wall.height, fill = wall.color)
     for death in app.levels[app.currentLevel].deaths:
         drawRect(death.x, death.y, death.width, death.height, fill = death.color)
     for spring in app.levels[app.currentLevel].springs:
-        drawRect(spring.x, spring.y, spring.width, spring.height, fill = spring.color)
+        if isinstance(spring, VanishSpring):
+            drawRect(spring.x, spring.y, spring.width, spring.height, fill = spring.color, opacity = spring.opacity)
+        else:
+            drawRect(spring.x, spring.y, spring.width, spring.height, fill = spring.color)
     for recharge in app.levels[app.currentLevel].recharges:
-        if recharge.visible:
-            drawRect(recharge.x, recharge.y, recharge.sideLength, recharge.sideLength, rotateAngle = 45, fill = 'lime', align = 'left-top')
+        if recharge.visible and recharge.opacity == 100:
+            drawRect(recharge.x, recharge.y, recharge.sideLength, recharge.sideLength, rotateAngle = 45, fill = 'lime', align = 'left-top', borderWidth = 2, border = rgb(34, 36, 33))
         else:
             drawRect(recharge.x, recharge.y, recharge.sideLength, recharge.sideLength, rotateAngle = 45, fill = rgb(220, 220, 220), align = 'left-top', borderWidth = 2, border = rgb(150, 150, 150))
+            drawRect(recharge.x, recharge.y, recharge.sideLength, recharge.sideLength, rotateAngle = 45, fill = 'lime', align = 'left-top', opacity = recharge.opacity, borderWidth = 2, border = rgb(34, 36, 33))
     for clear in app.levels[app.currentLevel].clears:
         drawRect(clear.x, clear.y, clear.width, clear.height, fill = clear.color, opacity = 0)
     drawRect(app.player.x, app.player.y, app.player.size, app.player.size, fill = app.player.fill)
@@ -210,28 +262,54 @@ def updatePos(app):
 
 def checkVisibleWallTimer(app):
     for wall in app.levels[app.currentLevel].walls:
-        if not wall.visible:
+        if isinstance(wall, VanishWall) and not wall.visible:
             if wall.opacity > 0:
                 wall.opacity -= 5
             elif 0 <= wall.timer <= 100:
                 wall.timer -= 1
             else:
                 wall.visible = True
-                wall.opacity = 100
+                wall.opacity = 20
                 wall.timer = 100
                 if app.player.touchingWall(wall):
                     wall.visible = False
                     wall.opacity = 0
                     wall.timer = 0
+        elif isinstance(wall, VanishWall):
+            if wall.opacity < 100:
+                wall.opacity += 20
+
+def checkVisibleSpringTimer(app):
+    for spring in app.levels[app.currentLevel].springs:
+        if isinstance(spring, VanishSpring) and not spring.visible:
+            if spring.opacity > 0:
+                spring.opacity -= 5
+            elif 0 <= spring.timer <= 100:
+                spring.timer -= 1
+            else:
+                spring.visible = True
+                spring.opacity = 20
+                spring.timer = 100
+                if app.player.touchingWall(spring):
+                    spring.visible = False
+                    spring.opacity = 0
+                    spring.timer = 0
+        elif isinstance(spring, VanishSpring):
+            if spring.opacity < 100:
+                spring.opacity += 20
 
 def checkRechargeTimer(app):
     for recharge in app.levels[app.currentLevel].recharges:
         if not recharge.visible:
             if 0 <= recharge.timer <= 100:
                 recharge.timer -= 1.5
+                recharge.opacity = 0
             else:
                 recharge.visible = True
                 recharge.timer = 100
+        else:
+            if recharge.opacity < 100 and recharge.visible:
+                recharge.opacity += 25
 
 def checkClear(app):
     for clear in app.levels[app.currentLevel].clears:
@@ -241,6 +319,7 @@ def checkClear(app):
                 app.currentLevel = 0
             app.player.x = app.levels[app.currentLevel].resetX
             app.player.y = app.levels[app.currentLevel].resetY
+            app.sideWallVelo = 0
             app.player.veloX = 0
             app.player.veloY = 0
             app.inWallJump = False
@@ -273,6 +352,8 @@ def checkDeath(app):
 def checkSpring(app):
     for spring in app.levels[app.currentLevel].springs:
         if app.player.touchingWall(spring):
+            if isinstance(spring, VanishSpring):
+                spring.visible = False
             app.player.jump(app.levels[app.currentLevel].springs, app.jumpHeight * 1.4)
             app.hasDashed = False
 
@@ -281,16 +362,6 @@ def checkRecharge(app):
         if app.player.touchingWall(recharge) and recharge.visible:
             recharge.visible = False
             app.hasDashed = False
-
-# def checkWallVeloColide(app):
-#     originalX = app.player.x
-#     app.player.x += app.sideWallVelo
-#     for wall in app.levels[app.currentLevel].walls:
-#         if app.player.touchingWall(wall):
-#             checkVisibleWall(wall)
-#             app.player.x = originalX
-#             app.sideWallVelo = 0
-#             break
 
 def checkWallVeloColide(app):
     if app.sideWallVelo > 0:
@@ -310,7 +381,6 @@ def checkWallVeloColide(app):
         if collided:
             break
 
-
 def monitorWallJump(app):
     if app.sideWallVelo > 0:
         app.sideWallVelo -= 2
@@ -328,7 +398,7 @@ def checkTouchingBottom(app):
     app.player.y -= 1
 
 def checkVisibleWall(wall):
-    if wall.vanish and wall.visible:
+    if isinstance(wall, VanishWall) and wall.visible:
         wall.visible = False
 
 def setColor(app):
@@ -342,6 +412,7 @@ def setColor(app):
 def onStep(app):
     updatePos(app)
     checkVisibleWallTimer(app)
+    checkVisibleSpringTimer(app)
     checkRechargeTimer(app)
     checkClear(app)
     checkFallen(app)
@@ -353,15 +424,19 @@ def onStep(app):
     checkTouchingBottom(app)
     setColor(app)
 
+
 def resetHiddenWalls(app):
     for wall in app.levels[app.currentLevel].walls:
-        if wall.vanish:
+        if isinstance(wall, VanishWall):
             wall.visible = True
             wall.opacity = 100
             wall.timer = 100
     for recharge in app.levels[app.currentLevel].recharges:
         recharge.visible = True
         recharge.timer = 100
+    for spring in app.levels[app.currentLevel].springs:
+        spring.visible = True
+        spring.timer = 100
 
 def onMousePress(app, mouseX, mouseY):
     if app.counter == 0:
@@ -378,7 +453,7 @@ def onMousePress(app, mouseX, mouseY):
             app.rW = 600 - app.rX
         if 600 - app.rY - app.rH < 12:
             app.rH = 600 - app.rY
-        print(f'app.level2.walls.append(Wall(False, {app.rX}, {app.rY}, {app.rW}, {app.rH}))')
+        print(f'app.level6.walls.append(Wall({app.rX}, {app.rY}, {app.rW}, {app.rH}))')
     app.counter += 1
     if app.counter == 2:
         app.counter = 0

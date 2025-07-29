@@ -8,3 +8,4 @@ class Recharge:
         self.color = 'lime'
         self.visible = True
         self.timer = 100
+        self.opacity = 100
