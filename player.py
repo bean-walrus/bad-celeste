@@ -19,14 +19,14 @@ class Player:
             self.x += 1
             if self.touchingWall(wall):
                 for key in dict:
-                    if dict[key] == True:
+                    if dict[key] == True and self.veloY > 0:
                         self.holdingWall = True
                         self.x -= 1
                         return
             self.x -= 2
             if self.touchingWall(wall):
                 for key in dict:
-                    if dict[key] == True:
+                    if dict[key] == True and self.veloY > 0:
                         self.holdingWall = True
                         self.x += 1
                         return

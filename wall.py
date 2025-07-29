@@ -1,3 +1,5 @@
+from cmu_graphics import rgb
+
 class Wall:
     def __init__(self, vanish, x, y, width, height):
         self.vanish = vanish
@@ -10,6 +12,6 @@ class Wall:
         if self.vanish:
             self.color = 'navy'
         else:
-            self.color = 'darkGray'
+            self.color = rgb(80, 80, 80)
         self.visible = True
         self.opacity = 100
