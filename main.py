@@ -1,3 +1,5 @@
+# PLEASE read the README file. It has some important stuff.
+
 from cmu_graphics import *
 from player import Player
 from wall import *
