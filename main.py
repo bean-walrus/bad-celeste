@@ -7,22 +7,23 @@ from recharge import Recharge
 from sign import Sign
 from clear import Clear
 from level import Level
+import time
 
 def onAppStart(app):
     app.player = Player()
     app.width = 600
     app.height = 600
     app.speed = 10
-    app.stepsPerSecond = 40
+    app.stepsPerSecond = 45
 
-    app.inTitle = True
+    app.inTitle = True #Change later
     app.coverOpacity = 100
     app.changeCover = False
     app.cover1 = True
     app.coverCounter = 0
 
     app.meters = 100
-    app.onReset = True
+    app.onReset = True #Change later
     app.resetTimer = 0
     app.fakeY = 600
     app.resetIter = 7
@@ -47,6 +48,13 @@ def onAppStart(app):
     app.rW = 0
     app.rH = 0
 
+    app.startTime = 0
+    app.finalTime = 0
+    app.deaths = 0
+
+    app.currentSong = 0
+    app.menu = Sound('bad-celeste\sounds\menu.mp3\sounds\menu.mp3')
+
     addLevels(app)
 
 def addLevels(app):
@@ -69,7 +77,7 @@ def addLevels(app):
     app.level0.deaths.append(Death(380, 541, 184, 20))
     app.level0.signs.append(Sign('''PRESS C TO JUMP
 PRESS X TO DASH IN THE AIR
-ARROWS KEYS DIRECTION YOUR DASH''', 121, 436))
+ARROWS KEYS DIRECT YOUR DASH''', 121, 436))
     app.level0.clears.append(Clear(434, 0, 130, 1))
 
     # Level 1
@@ -90,7 +98,7 @@ ARROWS KEYS DIRECTION YOUR DASH''', 121, 436))
     app.level1.deaths.append(Death(262, 216, 37, 10))
     app.level1.signs.append(Sign('''WHEN NEXT TO A WALL
 PRESS C TO WALL JUMP
-YOU DON'T NEED TO HOLD ARROW KEYS''', 143, 483))
+YOU DON'T NEED TO HOLD ARROW KEYS''', 143, 482))
 
     app.level1.clears.append(Clear(434, 1, 128, 1))
 
@@ -130,7 +138,7 @@ BOUNCY''', 72, 475))
     app.levels.append(app.level3)
 
     app.level3.walls.append(Wall(0, 450, 146, 150))
-    app.level3.walls.append(Wall(0, 0, 82, 130))
+    app.level3.walls.append(Wall(0, 0, 82, 120))
     app.level3.walls.append(Wall(0, 100, 245, 35))
     app.level3.walls.append(Wall(186, 0, 414, 24))
     app.level3.walls.append(Wall(559, 0, 41, 186))
@@ -177,9 +185,9 @@ THEY RESPAWN AFTER A LITTLE BIT''', 167, 438))
     app.level5.walls.append(Wall(532, 0, 68, 197))
 
 
-    app.level5.signs.append(Sign('''_TO ALL OF THOSE
-THAT PERISHED ON THE CLIMB
-YOU WILL NOT BE FORGOTTEN''', 293, 176))
+    app.level5.signs.append(Sign('''_CELESTE MOUNTAIN_
+THIS MEMORIAL TO THOSE
+WHO PERISHED ON THE CLIMB''', 293, 176))
     
     app.level5.clears.append(Clear(131, 0, 400, 2))
     #Level 6
@@ -232,11 +240,111 @@ OR AFTER YOU DIE''', 85, 470))
     app.level7.recharges.append(Recharge(372, 100, 38, 38))
     app.level7.clears.append(Clear(70, 0, 120, 2))
 
+    #Level 8
+    app.level8 = Level(20,430)
+    app.levels.append(app.level8)
+
+    app.level8.walls.append(Wall(0, 0, 112, 300))
+    app.level8.walls.append(Wall(0, 298, 221, 39))
+    app.level8.walls.append(Wall(86, 149, 64, 152))
+    app.level8.walls.append(Wall(0, 526, 74, 74))
+    app.level8.walls.append(Wall(478, 222, 35, 147))
+    app.level8.walls.append(Wall(441, 301, 72, 69))
+    app.level8.walls.append(Wall(262, 0, 338, 74))
+    app.level8.walls.append(Wall(588, 68, 50, 600))
+
+    app.level8.deaths.append(Death(149, 277, 72, 21))
+    app.level8.deaths.append(Death(441, 282, 37, 21))
+
+    app.level8.walls.append(VanishWall(186, 525, 38, 38))
+    app.level8.walls.append(VanishWall(224, 525, 38, 38))
+    app.level8.walls.append(VanishWall(375, 525, 38, 38))
+    app.level8.walls.append(VanishWall(413, 525, 38, 38))
+
+    app.level8.clears.append(Clear(110, 0, 152, 2))
+
+    #Level 9
+    app.level9 = Level(6,476)
+    app.levels.append(app.level9)
+    app.level9.walls.append(Wall(0, 526, 38, 74))
+    app.level9.walls.append(Wall(190, 562, 38, 38))
+    app.level9.walls.append(Wall(0, 0, 182, 408))
+    app.level9.walls.append(Wall(172, 114, 312, 73))
+    app.level9.walls.append(Wall(484, 150, 38, 34))
+    app.level9.walls.append(Wall(370, 75, 114, 185))
+    app.level9.walls.append(Wall(370, 145, 38, 153))
+    app.level9.walls.append(Wall(523, 338, 77, 112))
+    app.level9.walls.append(Wall(446, 0, 154, 35))
+    app.level9.walls.append(Wall(180, 0, 136, 132))
+    app.level9.walls.append(Wall(291, 75, 91, 45))
+
+    app.level9.walls.append(VanishWall(370, 298, 38, 38))
+    app.level9.walls.append(VanishWall(370, 336, 38, 38))
+
+    app.level9.springs.append(Spring(190, 551, 38, 11))
+
+    app.level9.deaths.append(Death(0, 408, 182, 20))
+    app.level9.deaths.append(Death(182, 187, 188, 20))
+
+    app.level9.clears.append(Clear(316, 0, 130, 2))
+
+    #Level 10
+    app.level10 = Level(6,476)
+    app.levels.append(app.level10)
+    app.level10.walls.append(Wall(0, 526, 183, 74))
+    app.level10.walls.append(Wall(118, 302, 146, 72))
+    app.level10.walls.append(Wall(192, 370, 113, 35))
+    app.level10.walls.append(Wall(261, 338, 193, 34))
+    app.level10.walls.append(Wall(267, 390, 38, 97))
+    app.level10.walls.append(Wall(342, 563, 39, 39))
+    app.level10.walls.append(Wall(550, 450, 39, 150))
+    app.level10.walls.append(Wall(344, 0, 256, 106))
+    app.level10.walls.append(Wall(418, 100, 195, 148))
+
+    app.level10.springs.append(Spring(342, 554, 39, 10))
+    app.level10.springs.append(Spring(550, 439, 39, 12))
+
+    app.level10.deaths.append(Death(118, 282, 146, 20))
+    app.level10.deaths.append(Death(247, 405, 20, 82))
+    app.level10.deaths.append(Death(418, 248, 182, 20))
+    app.level10.clears.append(Clear(0, 0, 343, 2))
+
+    #Level 11
+    app.level11 = Level(42,382)
+    app.levels.append(app.level11)
+    app.level11.walls.append(Wall(0, 0, 72, 373))
+    app.level11.walls.append(Wall(0, 370, 34, 230))
+    app.level11.walls.append(Wall(72, 279, 72, 131))
+    app.level11.walls.append(Wall(17, 146, 242, 153))
+    app.level11.walls.append(Wall(90, 146, 397, 77))
+    app.level11.walls.append(Wall(452, 222, 35, 34))
+    app.level11.walls.append(Wall(222, 0, 113, 73))
+    app.level11.walls.append(Wall(262, 0, 338, 37))
+
+    app.level11.walls.append(VanishWall(34, 410, 38, 38))
+
+    app.level11.deaths.append(Death(452, 255, 35, 12))
+
+    app.level11.recharges.append(Recharge(154, 360, 35, 35))
+    app.level11.recharges.append(Recharge(271, 255, 35, 35))
+    app.level11.recharges.append(Recharge(525, 248, 35, 35))
+
+    app.level11.clears.append(Clear(72, 0, 150, 2))
+
+    #Summit
+    app.summit = Level(42,410)
+    app.levels.append(app.summit)
+
+    app.summit.walls.append(Wall(0, 550, 600, 50))
+    app.summit.walls.append(Wall(100, 400, 400, 150))
+    app.summit.walls.append(Wall(160, 200, 280 ,200))
+    app.summit.signs.append(Sign('', 291, 150))
+
 def safeIndex(lst, item):
     return lst.index(item) if item in lst else -1
 
 def redrawAll(app):
-    # drawImage('bad-celeste\images\\tomb.png', 0, 0, width = 600, height = 600)
+    drawImage('bad-celeste\images\level13.png', 0, 0, width = 600, height = 600)
     if app.inTitle:
         drawRect(0, 0, 600, 600, fill = 'black')
         if app.cover1:
@@ -264,19 +372,38 @@ def redrawAll(app):
                 drawRect(recharge.x, recharge.y, recharge.sideLength, recharge.sideLength, rotateAngle = 45, fill = rgb(220, 220, 220), align = 'left-top', borderWidth = 2, border = rgb(150, 150, 150))
                 drawRect(recharge.x, recharge.y, recharge.sideLength, recharge.sideLength, rotateAngle = 45, fill = 'lime', align = 'left-top', opacity = recharge.opacity, borderWidth = 2, border = rgb(34, 36, 33))
         for sign in app.levels[app.currentLevel].signs:
-            drawRect(sign.x, sign.y + 5, 50, 30, fill = sign.color)
-            drawRect(sign.x + 22, sign.y + 30, 5, 20, fill = sign.color)
+            if sign.message == '''_CELESTE MOUNTAIN_
+THIS MEMORIAL TO THOSE
+WHO PERISHED ON THE CLIMB''':
+                drawArc(sign.x + 25, sign.y, 50, 40, 0, 180, fill = rgb(54, 54, 54))
+                drawRect(sign.x, sign.y, 50, 50, fill = rgb(54, 54, 54))
+            elif app.meters == 1300:
+                elapsedTime = app.finalTime - app.startTime
+                minutes = int(elapsedTime // 60)
+                seconds = int(elapsedTime % 60)
+                app.levels[app.currentLevel].signs[0].message = f'''TIME: {minutes}:{seconds:02}
+DEATHS: {app.deaths}
+THANKS FOR PLAYING!'''
+                drawRect(sign.x, sign.y, 5, 50, fill = rgb(150, 87, 21))
+                drawArc(sign.x + 2.5, sign.y, 5, 5, 0, 180, fill = rgb(150, 87, 21))
+                drawPolygon(sign.x + 5, sign.y, sign.x + 5, sign.y + 20, sign.x + 35, sign.y + 10, fill = rgb(88, 168, 27))
+            else:
+                drawRect(sign.x, sign.y + 5, 50, 30, fill = sign.color)
+                drawRect(sign.x + 22, sign.y + 30, 5, 20, fill = sign.color)
         if not app.onReset:
             drawRect(app.player.x, app.player.y, app.player.size, app.player.size, fill = app.player.fill, border = 'black', borderWidth = 1.5)
         if app.onReset:
             drawRect(175, 265, 250, 70, fill = 'black')
             drawRect(app.levels[app.currentLevel].resetX, app.fakeY, app.player.size, app.player.size, fill = app.player.fill, border = 'black', borderWidth = 1.5)
-            drawLabel(f'{app.meters} M', 300, 300, font='Bytesized', size=50, fill = 'white')
+            if app.meters != 1300:
+                drawLabel(f'{app.meters} M', 300, 300, font='Bytesized', size=50, fill = 'white')
+            else:
+                drawLabel('SUMMIT', 300, 300, font='Bytesized', size=50, fill = 'white')
         for sign in app.levels[app.currentLevel].signs:
             if sign.display:
                 oldCounter = sign.counter
                 lineCounter = -1
-                drawRect(0, 183, 600, 96, fill = 'black')
+                drawRect(0, 170, 600, 96, fill = 'black')
                 for line in sign.message.splitlines():
                     lineCounter += 1
                     letterCounter = -1
@@ -286,11 +413,16 @@ def redrawAll(app):
                             if letter.isspace():
                                 sign.counter -= 1
                                 continue
-                            drawLabel(letter, letterCounter * 16 + ((app.width - 16 * len(line)) // 2), 200 + lineCounter * 28, font = 'Bytesized', size = 35, fill = 'white')
+                            drawLabel(letter, letterCounter * 16 + ((app.width - 16 * len(line)) // 2), 187 + lineCounter * 28, font = 'Bytesized', size = 35, fill = 'white')
                             sign.counter -= 1
                 sign.counter = oldCounter
 
 # --------------- onStep Methods ---------------
+
+def checkSong(app):
+    if app.currentSong == 0:
+        app.menu.play(loop = True)
+
 
 def updatePos(app):
     if not app.onReset:
@@ -329,7 +461,13 @@ def updatePos(app):
             app.player.veloX -= 2 * (1 if app.player.veloX > 0 else -1)
         else:
             app.player.veloX = 0
+        
+        if app.player.x + app.player.size > app.width:
+            app.player.x = app.width - app.player.size
+        if app.player.x < 0:
+            app.player.x = 0
 
+    
 def checkVisibleWallTimer(app):
     for wall in app.levels[app.currentLevel].walls:
         if isinstance(wall, VanishWall) and not wall.visible:
@@ -410,6 +548,7 @@ def checkFallen(app):
         app.inSideDash = False
         app.hasDashed = False
         app.onReset = True
+        app.deaths += 1
         resetHiddenWalls(app)
 
 def checkDeath(app):
@@ -423,6 +562,7 @@ def checkDeath(app):
             app.inSideDash = False
             app.hasDashed = False
             app.onReset = True
+            app.deaths += 1
             resetHiddenWalls(app)
 
 def checkSpring(app):
@@ -513,9 +653,14 @@ def resetPosAsthetic(app):
                 app.fakeY = 600
                 app.onReset = False
 
+def checkFinished(app):
+    if app.meters >= 1300 and app.finalTime == 0:
+            print('yay')
+            app.finalTime = time.time()
 # ----------------------------------------------
 
 def onStep(app):
+    checkSong(app)
     if not app.inTitle:
         updatePos(app)
         checkVisibleWallTimer(app)
@@ -532,6 +677,7 @@ def onStep(app):
         checkTouchingBottom(app)
         setColor(app)
         resetPosAsthetic(app)
+        checkFinished(app)
 
     elif app.changeCover:
         if app.coverCounter % 4 == 0:
@@ -539,6 +685,7 @@ def onStep(app):
         app.coverCounter += 1
         if app.coverCounter >= 32:
             app.inTitle = False
+            app.startTime = time.time()
 
 def resetHiddenWalls(app):
     for wall in app.levels[app.currentLevel].walls:
@@ -568,7 +715,7 @@ def onMousePress(app, mouseX, mouseY):
             app.rW = 600 - app.rX
         if 600 - app.rY - app.rH < 12:
             app.rH = 600 - app.rY
-        print(f'app.level6.walls.append(Wall({app.rX}, {app.rY}, {app.rW}, {app.rH}))')
+        print(f'app.level10.deaths.append(Death({app.rX}, {app.rY}, {app.rW}, {app.rH}))')
     app.counter += 1
     if app.counter == 2:
         app.counter = 0
@@ -626,19 +773,21 @@ def onKeyPress(app, key):
                 app.player.dash(app.direction)
         if 'a' in key:
             print(app.player.x, app.player.y)
+            print(app.deaths)
         if 'q' in key:
-            app.currentLevel += 1
-            if app.currentLevel == len(app.levels):
-                app.currentLevel = 0
-            app.player.x = app.levels[app.currentLevel].resetX
-            app.player.y = app.levels[app.currentLevel].resetY
-            app.player.veloX = 0
-            app.player.veloY = 0
-            app.inWallJump = False
-            app.inSideDash = False
-            app.hasDashed = False
-            app.onReset = True
-            app.meters += 100
+            if app.meters != 1300:
+                app.currentLevel += 1
+                if app.currentLevel == len(app.levels):
+                    app.currentLevel = 0
+                app.player.x = app.levels[app.currentLevel].resetX
+                app.player.y = app.levels[app.currentLevel].resetY
+                app.player.veloX = 0
+                app.player.veloY = 0
+                app.inWallJump = False
+                app.inSideDash = False
+                app.hasDashed = False
+                app.onReset = True
+                app.meters += 100
 
 def onKeyHold(app, key):
     for i in key:
@@ -672,6 +821,9 @@ def onKeyHold(app, key):
                         app.player.x = originalX + dx
                         hitWall = False
                         for wall in app.levels[app.currentLevel].walls:
+                            # if app.player.x + app.player.size > app.width:
+                            #     app.player.x = app.width - app.player.size
+                            #     break
                             if app.player.touchingWall(wall):
                                 checkVisibleWall(wall)
                                 hitWall = True
@@ -682,22 +834,20 @@ def onKeyHold(app, key):
                             break
                         else:
                             app.player.x = originalX + app.speed
+                            if app.player.x + app.player.size > app.width:
+                                app.player.x = app.width - app.player.size
                             app.wayHoldingWall['right'] = False
 
-    if app.player.x + app.player.size > app.width:
-        app.player.x = app.width - app.player.size
-    if app.player.x < 0:
-        app.player.x = 0
 
-    if 'r' in key:
-        app.player.x = app.levels[app.currentLevel].resetX
-        app.player.y = app.levels[app.currentLevel].resetY
-        app.player.velo = 0
-        app.inWallJump = False
-        app.inSideDash = False
-        app.hasDashed = False
-        app.onReset = True
-        resetHiddenWalls(app)
+    # if 'r' in key:
+    #     app.player.x = app.levels[app.currentLevel].resetX
+    #     app.player.y = app.levels[app.currentLevel].resetY
+    #     app.player.velo = 0
+    #     app.inWallJump = False
+    #     app.inSideDash = False
+    #     app.hasDashed = False
+    #     app.onReset = True
+    #     resetHiddenWalls(app)
 
 def onKeyRelease(app, key):
     if key in app.keysHeld:
