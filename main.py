@@ -4,9 +4,9 @@ from wall import *
 from death import Death
 from spring import *
 from recharge import Recharge
+from sign import Sign
 from clear import Clear
 from level import Level
-import random
 
 def onAppStart(app):
     app.player = Player()
@@ -14,6 +14,18 @@ def onAppStart(app):
     app.height = 600
     app.speed = 10
     app.stepsPerSecond = 40
+
+    app.inTitle = True
+    app.coverOpacity = 100
+    app.changeCover = False
+    app.cover1 = True
+    app.coverCounter = 0
+
+    app.meters = 100
+    app.onReset = True
+    app.resetTimer = 0
+    app.fakeY = 600
+    app.resetIter = 7
 
     app.levels = []
     app.currentLevel = 0
@@ -48,29 +60,22 @@ def addLevels(app):
     app.level0.walls.append(Wall(0, 486, 180, 112))
     app.level0.walls.append(Wall(300, 400, 80, 200))
     app.level0.walls.append(Wall(0, 560, 600, 40))
-
-    # app.level0.walls.append(VanishWall(306, 373, 68, 38))
-
-    # app.level0.springs.append(Spring(250, 300, 68, 38))
-    
-
     app.level0.walls.append(Wall(0, 0, 69, 293))
     app.level0.walls.append(Wall(69, 223, 112, 70))
     app.level0.walls.append(Wall(456, 114, 150, 76))
     app.level0.walls.append(Wall(564, 0, 36, 600))
     app.level0.walls.append(Wall(0, 0, 434, 30))
-
     app.level0.deaths.append(Death(180, 544, 120, 20))
     app.level0.deaths.append(Death(380, 541, 184, 20))
-
+    app.level0.signs.append(Sign('''HELLO,
+MY NAME STEVE''', 121, 436))
     app.level0.clears.append(Clear(434, 0, 130, 1))
 
     # Level 1
-    app.level1 = Level(50, 500)
+    app.level1 = Level(50, 470)
     app.levels.append(app.level1)
 
-
-    app.level1.walls.append(Wall(0, 562, 276, 38))
+    app.level1.walls.append(Wall(0, 532, 276, 68))
     app.level1.walls.append(Wall(0, 263, 147, 184))
     app.level1.walls.append(Wall(0, 0, 41, 264))
     app.level1.walls.append(Wall(0, 0, 433, 41))
@@ -132,7 +137,7 @@ def addLevels(app):
     app.level3.clears.append(Clear(82, 0, 104, 2))
 
     #Level 4
-    app.level4 = Level(10,377)
+    app.level4 = Level(40,377)
     app.levels.append(app.level4)
 
     app.level4.walls.append(Wall(0, 450, 109, 150))
@@ -148,12 +153,12 @@ def addLevels(app):
     app.level4.clears.append(Clear(446, 0, 80, 2)) 
 
     #Level 5
-    app.level5 = Level(10,524)
+    app.level5 = Level(40, 435)
     app.levels.append(app.level5)
 
     app.level5.walls.append(Wall(0, 0, 37, 302))
     app.level5.walls.append(Wall(18, 227, 65, 75))
-    app.level5.walls.append(Wall(0, 566, 150, 34))
+    app.level5.walls.append(Wall(0, 520, 150, 80))
     app.level5.walls.append(Wall(187, 0, 413, 73))
     app.level5.walls.append(Wall(525, 72, 75, 193))
 
@@ -172,93 +177,119 @@ def addLevels(app):
     app.level5.clears.append(Clear(37, 0, 150, 2))
 
     #Level 6
-    app.level6 = Level(80,380)
+    app.level6 = Level(82,407)
     app.levels.append(app.level6)
 
     app.level6.walls.append(Wall(0, 565, 600, 75))
     app.level6.walls.append(Wall(326, 585, 274, 35))
     app.level6.walls.append(Wall(0, 0, 70, 200))
     app.level6.walls.append(Wall(74, 480, 36, 100))
-    app.level6.walls.append(Wall(530, 0, 70, 200))
+    app.level6.walls.append(Wall(530, 0, 70, 250))
     app.level6.walls.append(Wall(190, 0, 600, 70))
-    app.level6.walls.append(Wall(414, 516, 84, 64))
+    app.level6.walls.append(Wall(414, 530, 84, 64))
     app.level6.walls.append(Wall(190, 0, 70, 150))
 
     app.level6.deaths.append(Death(0, 545, 74, 21))
     app.level6.deaths.append(Death(110, 545, 304, 21))
     app.level6.deaths.append(Death(498, 545, 102, 21))
 
-    app.level6.springs.append(Spring(414, 505, 84, 11))
+    app.level6.springs.append(Spring(414, 519, 84, 11))
 
     app.level6.recharges.append(Recharge(372, 100, 38, 38))
     app.level6.clears.append(Clear(70, 0, 120, 2))
-
 
 def safeIndex(lst, item):
     return lst.index(item) if item in lst else -1
 
 def redrawAll(app):
     # drawImage('bad-celeste\images\level6.png', 0, 0, width = 600, height = 600)
-    for wall in app.levels[app.currentLevel].walls:
-        if isinstance(wall, VanishWall):
-            drawRect(wall.x, wall.y, wall.width, wall.height, fill = wall.color, opacity = wall.opacity)
+    if app.inTitle:
+        drawRect(0, 0, 600, 600, fill = 'black')
+        if app.cover1:
+            drawImage('bad-celeste\images\cover.png', 0, 0, width = 600, height = 600, opacity = app.coverOpacity)
         else:
-            drawRect(wall.x, wall.y, wall.width, wall.height, fill = wall.color)
-    for death in app.levels[app.currentLevel].deaths:
-        drawRect(death.x, death.y, death.width, death.height, fill = death.color)
-    for spring in app.levels[app.currentLevel].springs:
-        if isinstance(spring, VanishSpring):
-            drawRect(spring.x, spring.y, spring.width, spring.height, fill = spring.color, opacity = spring.opacity)
-        else:
-            drawRect(spring.x, spring.y, spring.width, spring.height, fill = spring.color)
-    for recharge in app.levels[app.currentLevel].recharges:
-        if recharge.visible and recharge.opacity == 100:
-            drawRect(recharge.x, recharge.y, recharge.sideLength, recharge.sideLength, rotateAngle = 45, fill = 'lime', align = 'left-top', borderWidth = 2, border = rgb(34, 36, 33))
-        else:
-            drawRect(recharge.x, recharge.y, recharge.sideLength, recharge.sideLength, rotateAngle = 45, fill = rgb(220, 220, 220), align = 'left-top', borderWidth = 2, border = rgb(150, 150, 150))
-            drawRect(recharge.x, recharge.y, recharge.sideLength, recharge.sideLength, rotateAngle = 45, fill = 'lime', align = 'left-top', opacity = recharge.opacity, borderWidth = 2, border = rgb(34, 36, 33))
-    for clear in app.levels[app.currentLevel].clears:
-        drawRect(clear.x, clear.y, clear.width, clear.height, fill = clear.color, opacity = 0)
-    drawRect(app.player.x, app.player.y, app.player.size, app.player.size, fill = app.player.fill)
+            drawImage('bad-celeste\images\cover2.png', 0, 0, width = 600, height = 600, opacity = app.coverOpacity)
+    else:
+        drawRect(0, 0, 600, 600, fill = rgb(200,200,200))
+        for wall in app.levels[app.currentLevel].walls:
+            if isinstance(wall, VanishWall):
+                drawRect(wall.x, wall.y, wall.width, wall.height, fill = wall.color, opacity = wall.opacity)
+            else:
+                drawRect(wall.x, wall.y, wall.width, wall.height, fill = wall.color)
+        for death in app.levels[app.currentLevel].deaths:
+            drawRect(death.x, death.y, death.width, death.height, fill = death.color)
+        for spring in app.levels[app.currentLevel].springs:
+            if isinstance(spring, VanishSpring):
+                drawRect(spring.x, spring.y, spring.width, spring.height, fill = spring.color, opacity = spring.opacity)
+            else:
+                drawRect(spring.x, spring.y, spring.width, spring.height, fill = spring.color)
+        for recharge in app.levels[app.currentLevel].recharges:
+            if recharge.visible and recharge.opacity == 100:
+                drawRect(recharge.x, recharge.y, recharge.sideLength, recharge.sideLength, rotateAngle = 45, fill = 'lime', align = 'left-top', borderWidth = 2, border = rgb(34, 36, 33))
+            else:
+                drawRect(recharge.x, recharge.y, recharge.sideLength, recharge.sideLength, rotateAngle = 45, fill = rgb(220, 220, 220), align = 'left-top', borderWidth = 2, border = rgb(150, 150, 150))
+                drawRect(recharge.x, recharge.y, recharge.sideLength, recharge.sideLength, rotateAngle = 45, fill = 'lime', align = 'left-top', opacity = recharge.opacity, borderWidth = 2, border = rgb(34, 36, 33))
+        for clear in app.levels[app.currentLevel].clears:
+            drawRect(clear.x, clear.y, clear.width, clear.height, fill = clear.color, opacity = 0)
+        if not app.onReset:
+            drawRect(app.player.x, app.player.y, app.player.size, app.player.size, fill = app.player.fill, border = 'black', borderWidth = 1.5)
+        if app.onReset:
+            drawRect(175, 265, 250, 70, fill = 'black')
+            drawRect(app.levels[app.currentLevel].resetX, app.fakeY, app.player.size, app.player.size, fill = app.player.fill, border = 'black', borderWidth = 1.5)
+            drawLabel(f'{app.meters} M', 300, 300, font='Bytesized', size=50, fill = 'white')
+        for sign in app.levels[app.currentLevel].signs:
+            drawRect(sign.x, sign.y, sign.width, sign.height, fill = sign.color)
+            if sign.display:
+                oldCounter = sign.counter
+                for line in sign.message.splitlines():
+                    for letter in range(len(sign.message)):
+                        if sign.counter >= 0:
+                            if sign.message[letter].isspace():
+                                sign.counter -= 1
+                                continue
+                            drawLabel(sign.message[letter], letter * 20 + 40, 200, font = 'Bytesized', size = 50)
+                            sign.counter -= 1
+                sign.counter = oldCounter
 
 # --------------- onStep Methods ---------------
 
 def updatePos(app):
-    app.player.setHoldingWall(app.wayHoldingWall, app.levels[app.currentLevel].walls)
-    if abs(app.player.veloX) < 10 or not app.inSideDash: 
-        if not app.player.holdingWall or (app.player.holdingWall and app.player.veloY < 0):
-            if app.player.veloY + app.player.gravity < app.player.tv:
-                app.player.veloY += app.player.gravity
+    if not app.onReset:
+        app.player.setHoldingWall(app.wayHoldingWall, app.levels[app.currentLevel].walls)
+        if abs(app.player.veloX) < 10 or not app.inSideDash: 
+            if not app.player.holdingWall or (app.player.holdingWall and app.player.veloY < 0):
+                if app.player.veloY + app.player.gravity < app.player.tv:
+                    app.player.veloY += app.player.gravity
+            else:
+                if app.player.veloY + app.player.gravity * 0.25 < app.player.tv:
+                    app.player.veloY += app.player.gravity * 0.25
+        if abs(app.player.veloX) < 10:
+            app.inSideDash = False
+
+        app.player.x += app.player.veloX
+        for wall in app.levels[app.currentLevel].walls:
+            if app.player.touchingWall(wall):
+                checkVisibleWall(wall)
+                if app.player.veloX > 0: 
+                    app.player.x = wall.x - app.player.size
+                elif app.player.veloX < 0: 
+                    app.player.x = wall.x + wall.width
+                app.player.veloX = 0
+
+        app.player.y += app.player.veloY
+        for wall in app.levels[app.currentLevel].walls:
+            if app.player.touchingWall(wall):
+                checkVisibleWall(wall)
+                if app.player.veloY > 0: 
+                    app.player.y = wall.y - app.player.size
+                elif app.player.veloY < 0:
+                    app.player.y = wall.y + wall.height
+                app.player.veloY = 0
+
+        if abs(app.player.veloX) > 2:
+            app.player.veloX -= 2 * (1 if app.player.veloX > 0 else -1)
         else:
-            if app.player.veloY + app.player.gravity * 0.25 < app.player.tv:
-                app.player.veloY += app.player.gravity * 0.25
-    if abs(app.player.veloX) < 10:
-        app.inSideDash = False
-
-    app.player.x += app.player.veloX
-    for wall in app.levels[app.currentLevel].walls:
-        if app.player.touchingWall(wall):
-            checkVisibleWall(wall)
-            if app.player.veloX > 0: 
-                app.player.x = wall.x - app.player.size
-            elif app.player.veloX < 0: 
-                app.player.x = wall.x + wall.width
             app.player.veloX = 0
-
-    app.player.y += app.player.veloY
-    for wall in app.levels[app.currentLevel].walls:
-        if app.player.touchingWall(wall):
-            checkVisibleWall(wall)
-            if app.player.veloY > 0: 
-                app.player.y = wall.y - app.player.size
-            elif app.player.veloY < 0:
-                app.player.y = wall.y + wall.height
-            app.player.veloY = 0
-
-    if abs(app.player.veloX) > 2:
-        app.player.veloX -= 2 * (1 if app.player.veloX > 0 else -1)
-    else:
-        app.player.veloX = 0
 
 def checkVisibleWallTimer(app):
     for wall in app.levels[app.currentLevel].walls:
@@ -278,6 +309,8 @@ def checkVisibleWallTimer(app):
         elif isinstance(wall, VanishWall):
             if wall.opacity < 100:
                 wall.opacity += 20
+                if wall.opacity > 100:
+                    wall.opacity = 100
 
 def checkVisibleSpringTimer(app):
     for spring in app.levels[app.currentLevel].springs:
@@ -325,6 +358,8 @@ def checkClear(app):
             app.inWallJump = False
             app.inSideDash = False
             app.hasDashed = False
+            app.onReset = True
+            app.meters += 100
 
 def checkFallen(app):
     if app.player.y > app.height:
@@ -335,6 +370,7 @@ def checkFallen(app):
         app.inWallJump = False
         app.inSideDash = False
         app.hasDashed = False
+        app.onReset = True
         resetHiddenWalls(app)
 
 def checkDeath(app):
@@ -347,6 +383,7 @@ def checkDeath(app):
             app.inWallJump = False
             app.inSideDash = False
             app.hasDashed = False
+            app.onReset = True
             resetHiddenWalls(app)
 
 def checkSpring(app):
@@ -354,7 +391,7 @@ def checkSpring(app):
         if app.player.touchingWall(spring):
             if isinstance(spring, VanishSpring):
                 spring.visible = False
-            app.player.jump(app.levels[app.currentLevel].springs, app.jumpHeight * 1.4)
+            app.player.jump(app.levels[app.currentLevel].springs, app.jumpHeight * 1.37)
             app.hasDashed = False
 
 def checkRecharge(app):
@@ -362,6 +399,13 @@ def checkRecharge(app):
         if app.player.touchingWall(recharge) and recharge.visible:
             recharge.visible = False
             app.hasDashed = False
+
+def checkSign(app):
+    for sign in app.levels[app.currentLevel].signs:
+                    if app.player.touchingWall(sign):
+                        sign.display = True
+                    else:
+                        sign.display = False
 
 def checkWallVeloColide(app):
     if app.sideWallVelo > 0:
@@ -407,29 +451,59 @@ def setColor(app):
     else:
         app.player.fill = rgb(41,173,255)
 
+def resetPosAsthetic(app):
+    if app.onReset:
+        nextStep = False
+        if app.fakeY > app.levels[app.currentLevel].resetY + 28:
+            for newY in ([1] * 10):
+                app.fakeY -= newY
+                if app.fakeY > app.levels[app.currentLevel].resetY + 28:
+                    continue
+                else:
+                    app.fakeY = app.levels[app.currentLevel].resetY + 28
+                    nextStep = True
+        else:
+            nextStep = True
+        if nextStep:
+            app.fakeY -= app.resetIter
+            app.resetIter -= 1
+            if app.resetIter <= -1:
+                app.resetIter = 7
+                app.fakeY = 600
+                app.onReset = False
+
 # ----------------------------------------------
 
 def onStep(app):
-    updatePos(app)
-    checkVisibleWallTimer(app)
-    checkVisibleSpringTimer(app)
-    checkRechargeTimer(app)
-    checkClear(app)
-    checkFallen(app)
-    checkDeath(app)
-    checkSpring(app)
-    checkRecharge(app)
-    checkWallVeloColide(app)
-    monitorWallJump(app)
-    checkTouchingBottom(app)
-    setColor(app)
+    if not app.inTitle:
+        updatePos(app)
+        checkVisibleWallTimer(app)
+        checkVisibleSpringTimer(app)
+        checkRechargeTimer(app)
+        checkClear(app)
+        checkFallen(app)
+        checkDeath(app)
+        checkSpring(app)
+        checkRecharge(app)
+        checkSign(app)
+        checkWallVeloColide(app)
+        monitorWallJump(app)
+        checkTouchingBottom(app)
+        setColor(app)
+        resetPosAsthetic(app)
 
+    elif app.changeCover:
+        if app.coverCounter % 4 == 0:
+            app.cover1 = not app.cover1
+        app.coverCounter += 1
+        if app.coverCounter >= 32:
+            app.inTitle = False
 
 def resetHiddenWalls(app):
     for wall in app.levels[app.currentLevel].walls:
         if isinstance(wall, VanishWall):
             wall.visible = True
-            wall.opacity = 100
+            # wall.opacity = 100
             wall.timer = 100
     for recharge in app.levels[app.currentLevel].recharges:
         recharge.visible = True
@@ -459,114 +533,120 @@ def onMousePress(app, mouseX, mouseY):
         app.counter = 0
 
 def onKeyPress(app, key):
-    if 'c' in key:
-        if app.player.veloY != 0:
-            app.player.x -= 1
-            for wall in app.levels[app.currentLevel].walls:
-                if app.player.touchingWall(wall):
-                    checkVisibleWall(wall)
-                    app.sideWallVelo += 22
-                    app.player.jump(app.levels[app.currentLevel].walls, app.wallJumpHeight)
-                    app.inWallJump = True
-                    break
-            app.player.x += 1
-        if app.player.veloY != 0:
-            app.player.x += 1
-            for wall in app.levels[app.currentLevel].walls:
-                if app.player.touchingWall(wall):
-                    checkVisibleWall(wall)
-                    app.sideWallVelo -= 22
-                    app.player.jump(app.levels[app.currentLevel].walls, app.wallJumpHeight)
-                    app.inWallJump = True
-                    break
-            app.player.x -= 1
-        
-        app.player.jump(app.levels[app.currentLevel].walls, app.jumpHeight)
-    if 'x' in key and not app.hasDashed:
-        app.direction['horizontal'] = 0
-        app.direction['vertical'] = 0
+    if app.inTitle:
+        app.changeCover = True
+    else:
+        if not app.onReset:
+            if 'c' in key:
+                if app.player.veloY != 0:
+                    app.player.x -= 1
+                    for wall in app.levels[app.currentLevel].walls:
+                        if app.player.touchingWall(wall):
+                            checkVisibleWall(wall)
+                            app.sideWallVelo += 22
+                            app.player.jump(app.levels[app.currentLevel].walls, app.wallJumpHeight)
+                            app.inWallJump = True
+                            break
+                    app.player.x += 1
+                if app.player.veloY != 0:
+                    app.player.x += 1
+                    for wall in app.levels[app.currentLevel].walls:
+                        if app.player.touchingWall(wall):
+                            checkVisibleWall(wall)
+                            app.sideWallVelo -= 22
+                            app.player.jump(app.levels[app.currentLevel].walls, app.wallJumpHeight)
+                            app.inWallJump = True
+                            break
+                    app.player.x -= 1
+                
+                app.player.jump(app.levels[app.currentLevel].walls, app.jumpHeight)
+            if 'x' in key and not app.hasDashed:
+                app.direction['horizontal'] = 0
+                app.direction['vertical'] = 0
 
-        if 'up' in app.keysHeld:
-            app.direction['vertical'] -= 20
-        if 'down' in app.keysHeld and 'up' not in app.keysHeld:
-            app.direction['vertical'] += 20
+                if 'up' in app.keysHeld:
+                    app.direction['vertical'] -= 20
+                if 'down' in app.keysHeld and 'up' not in app.keysHeld:
+                    app.direction['vertical'] += 20
 
-        if 'right' in app.keysHeld and 'left' not in app.keysHeld:
-            app.direction['horizontal'] += 20
-        if 'left' in app.keysHeld and 'right' not in app.keysHeld:
-            app.direction['horizontal'] -= 20
+                if 'right' in app.keysHeld and 'left' not in app.keysHeld:
+                    app.direction['horizontal'] += 20
+                if 'left' in app.keysHeld and 'right' not in app.keysHeld:
+                    app.direction['horizontal'] -= 20
 
-        if app.direction['horizontal'] == 0 and app.direction['vertical'] == 0:
-            app.direction['vertical'] = -20
-        app.hasDashed = True
-        if app.direction['horizontal'] == 0 and app.direction['vertical'] != 0:
-            app.direction['vertical'] *= 1.2
-        if app.direction['horizontal'] != 0 and app.direction['vertical'] == 0:
-            app.direction['horizontal'] *= 1.2
-            app.inSideDash = True
-        app.player.dash(app.direction)
-    if 'a' in key:
-        print(app.player.x, app.player.y)
-    if 'q' in key:
-        app.currentLevel += 1
-        if app.currentLevel == len(app.levels):
-            app.currentLevel = 0
-        app.player.x = app.levels[app.currentLevel].resetX
-        app.player.y = app.levels[app.currentLevel].resetY
-        app.player.veloX = 0
-        app.player.veloY = 0
-        app.inWallJump = False
-        app.inSideDash = False
-        app.hasDashed = False
+                if app.direction['horizontal'] == 0 and app.direction['vertical'] == 0:
+                    app.direction['vertical'] = -20
+                app.hasDashed = True
+                if app.direction['horizontal'] == 0 and app.direction['vertical'] != 0:
+                    app.direction['vertical'] *= 1.2
+                if app.direction['horizontal'] != 0 and app.direction['vertical'] == 0:
+                    app.direction['horizontal'] *= 1.2
+                    app.inSideDash = True
+                app.player.dash(app.direction)
+        if 'a' in key:
+            print(app.player.x, app.player.y)
+        if 'q' in key:
+            app.currentLevel += 1
+            if app.currentLevel == len(app.levels):
+                app.currentLevel = 0
+            app.player.x = app.levels[app.currentLevel].resetX
+            app.player.y = app.levels[app.currentLevel].resetY
+            app.player.veloX = 0
+            app.player.veloY = 0
+            app.inWallJump = False
+            app.inSideDash = False
+            app.hasDashed = False
+            app.onReset = True
+            app.meters += 100
 
 def onKeyHold(app, key):
     for i in key:
         if i not in app.keysHeld:
             app.keysHeld.append(i)
     originalX = app.player.x
-    if not (safeIndex(app.keysHeld, 'left') == -1 and safeIndex(app.keysHeld, 'right') == -1):
-        if safeIndex(app.keysHeld, 'left') > safeIndex(app.keysHeld, 'right'):
-            if not app.inWallJump and abs(app.player.veloX) < 10:
-                for dx in range(1, app.speed + 1):
-                    app.player.x = originalX - dx
-                    hitWall = False
-                    for wall in app.levels[app.currentLevel].walls:
-                        if app.player.touchingWall(wall):
-                            checkVisibleWall(wall)
-                            hitWall = True
+    if not app.onReset:
+        if not (safeIndex(app.keysHeld, 'left') == -1 and safeIndex(app.keysHeld, 'right') == -1):
+            if safeIndex(app.keysHeld, 'left') > safeIndex(app.keysHeld, 'right'):
+                if not app.inWallJump and abs(app.player.veloX) < 10:
+                    for dx in range(1, app.speed + 1):
+                        app.player.x = originalX - dx
+                        hitWall = False
+                        for wall in app.levels[app.currentLevel].walls:
+                            if app.player.touchingWall(wall):
+                                checkVisibleWall(wall)
+                                hitWall = True
+                                break
+                        if hitWall:
+                            app.player.x = originalX - (dx - 1)
+                            app.wayHoldingWall['left'] = True
                             break
-                    if hitWall:
-                        app.player.x = originalX - (dx - 1)
-                        app.wayHoldingWall['left'] = True
-                        break
-                    else:
-                        app.player.x = originalX - app.speed
-                        app.wayHoldingWall['left'] = False
-                    if app.player.x < 0:
-                        app.player.x = 0
-        else:
-            if not app.inWallJump and abs(app.player.veloX) < 10:
-                for dx in range(1, app.speed + 1):
-                    app.player.x = originalX + dx
-                    hitWall = False
-                    for wall in app.levels[app.currentLevel].walls:
-                        if app.player.touchingWall(wall):
-                            checkVisibleWall(wall)
-                            hitWall = True
+                        else:
+                            app.player.x = originalX - app.speed
+                            app.wayHoldingWall['left'] = False
+                        if app.player.x < 0:
+                            app.player.x = 0
+            else:
+                if not app.inWallJump and abs(app.player.veloX) < 10:
+                    for dx in range(1, app.speed + 1):
+                        app.player.x = originalX + dx
+                        hitWall = False
+                        for wall in app.levels[app.currentLevel].walls:
+                            if app.player.touchingWall(wall):
+                                checkVisibleWall(wall)
+                                hitWall = True
+                                break
+                        if hitWall:
+                            app.player.x = originalX + (dx - 1)
+                            app.wayHoldingWall['right'] = True
                             break
-                    if hitWall:
-                        app.player.x = originalX + (dx - 1)
-                        app.wayHoldingWall['right'] = True
-                        break
-                    else:
-                        app.player.x = originalX + app.speed
-                        app.wayHoldingWall['right'] = False
+                        else:
+                            app.player.x = originalX + app.speed
+                            app.wayHoldingWall['right'] = False
 
     if app.player.x + app.player.size > app.width:
         app.player.x = app.width - app.player.size
     if app.player.x < 0:
         app.player.x = 0
-
 
     if 'r' in key:
         app.player.x = app.levels[app.currentLevel].resetX
@@ -575,6 +655,7 @@ def onKeyHold(app, key):
         app.inWallJump = False
         app.inSideDash = False
         app.hasDashed = False
+        app.onReset = True
         resetHiddenWalls(app)
 
 def onKeyRelease(app, key):

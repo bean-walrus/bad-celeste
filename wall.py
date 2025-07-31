@@ -6,7 +6,7 @@ class Wall:
         self.y = y
         self.width = width
         self.height = height
-        self.color = rgb(153, 153, 163)
+        self.color = rgb(120, 120, 120)
 
 class VanishWall(Wall):
     def __init__(self, x, y, width, height):
