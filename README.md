@@ -16,6 +16,6 @@ work when it comes to fonts. So I'm sorry about that.
 While I don't have any sources for code as I coded this all by myself, I did take
 a whole lot of inspiration for level design from the Pico-8 version of Celeste. 
 That's what all the image files are. It was made by Maddy Thorson and Noel Berry. 
-The link to the original game is below:
+Also all the sounds were from that game as well. The link to the original game is below:
 
 https://www.lexaloffle.com/bbs/?tid=2145
