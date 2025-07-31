@@ -53,7 +53,9 @@ def onAppStart(app):
     app.deaths = 0
 
     app.currentSong = 0
-    app.menu = Sound('bad-celeste\sounds\menu.mp3\sounds\menu.mp3')
+    app.menu = Sound('sounds/menu.mp3')
+    app.game = Sound('sounds/game.mp3')
+    app.checkpoint = Sound('sounds/checkpoint.mp3')
 
     addLevels(app)
 
@@ -422,7 +424,15 @@ THANKS FOR PLAYING!'''
 def checkSong(app):
     if app.currentSong == 0:
         app.menu.play(loop = True)
-
+    elif app.currentSong == 1:
+        app.menu.pause()
+        app.game.play(loop = True)
+    elif app.currentSong == 2:
+        app.game.pause()
+        app.checkpoint.play(loop = True)
+    elif app.currentSong == 3:
+        app.checkpoint.pause()
+        app.game.play(loop = True)
 
 def updatePos(app):
     if not app.onReset:
@@ -466,7 +476,6 @@ def updatePos(app):
             app.player.x = app.width - app.player.size
         if app.player.x < 0:
             app.player.x = 0
-
     
 def checkVisibleWallTimer(app):
     for wall in app.levels[app.currentLevel].walls:
@@ -537,6 +546,13 @@ def checkClear(app):
             app.hasDashed = False
             app.onReset = True
             app.meters += 100
+            if app.meters == 600 or app.meters == 1300:
+                app.currentSong = 2
+            else:
+                if app.currentSong == 2: 
+                    app.currentSong = 3
+                else:
+                    app.currentSong = 1
 
 def checkFallen(app):
     if app.player.y > app.height:
@@ -685,6 +701,7 @@ def onStep(app):
         app.coverCounter += 1
         if app.coverCounter >= 32:
             app.inTitle = False
+            app.currentSong = 1
             app.startTime = time.time()
 
 def resetHiddenWalls(app):
@@ -788,6 +805,13 @@ def onKeyPress(app, key):
                 app.hasDashed = False
                 app.onReset = True
                 app.meters += 100
+                if app.meters == 600 or app.meters == 1300:
+                    app.currentSong = 2
+                else:
+                    if app.currentSong == 2: 
+                        app.currentSong = 3
+                    else:
+                        app.currentSong = 1
 
 def onKeyHold(app, key):
     for i in key:
