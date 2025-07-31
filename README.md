@@ -1,3 +1,7 @@
+# Important When Playing
+
+This game came out harder than expected. If you want to skip a level, press 'q'
+
 # Setup Instructions For Font
 Please do this or it will look awful when printing text
 
