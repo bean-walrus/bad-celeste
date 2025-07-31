@@ -1,7 +1,5 @@
-# bad-celeste
-
 # Setup Instructions For Font
-# Please do this or it will look awful when printing text
+Please do this or it will look awful when printing text
 
 Also I know it's not good to install stuff locally because then everyone has to do it
 but I'm telling you I tried my best. I hate to be that guy but cmu_graphics does NOT 
