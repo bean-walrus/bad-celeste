@@ -67,8 +67,9 @@ def addLevels(app):
     app.level0.walls.append(Wall(0, 0, 434, 30))
     app.level0.deaths.append(Death(180, 544, 120, 20))
     app.level0.deaths.append(Death(380, 541, 184, 20))
-    app.level0.signs.append(Sign('''HELLO,
-MY NAME STEVE''', 121, 436))
+    app.level0.signs.append(Sign('''PRESS C TO JUMP
+PRESS X TO DASH IN THE AIR
+ARROWS KEYS DIRECTION YOUR DASH''', 121, 436))
     app.level0.clears.append(Clear(434, 0, 130, 1))
 
     # Level 1
@@ -87,6 +88,9 @@ MY NAME STEVE''', 121, 436))
     app.level1.walls.append(Wall(459, 346, 99, 64))
 
     app.level1.deaths.append(Death(262, 216, 37, 10))
+    app.level1.signs.append(Sign('''WHEN NEXT TO A WALL
+PRESS C TO WALL JUMP
+YOU DON'T NEED TO HOLD ARROW KEYS''', 143, 483))
 
     app.level1.clears.append(Clear(434, 1, 128, 1))
 
@@ -114,6 +118,10 @@ MY NAME STEVE''', 121, 436))
 
     app.level2.springs.append(Spring(188, 552, 37, 10))
     app.level2.springs.append(Spring(488, 552, 38, 10))
+
+    app.level2.signs.append(Sign('''PINK
+IS
+BOUNCY''', 72, 475))
 
     app.level2.clears.append(Clear(299, 0, 175, 1))
 
@@ -150,59 +158,85 @@ MY NAME STEVE''', 121, 436))
 
     app.level4.recharges.append(Recharge(300, 300, 35, 35)) 
 
+    app.level4.signs.append(Sign('''THAT IS A RECHARGE CRYSTAL
+USE IT TO GAIN BACK A DASH
+THEY RESPAWN AFTER A LITTLE BIT''', 167, 438))
+
     app.level4.clears.append(Clear(446, 0, 80, 2)) 
 
     #Level 5
     app.level5 = Level(40, 435)
     app.levels.append(app.level5)
+    app.level5.walls.append(Wall(0, 0, 131, 148))
+    app.level5.walls.append(Wall(0, 145, 50, 253))
+    app.level5.walls.append(Wall(0, 523, 153, 77))
+    app.level5.walls.append(Wall(152, 338, 102, 262))
+    app.level5.walls.append(Wall(224, 225, 150, 375))
+    app.level5.walls.append(Wall(226, 225, 374, 74))
+    app.level5.walls.append(Wall(474, 135, 126, 110))
+    app.level5.walls.append(Wall(532, 0, 68, 197))
 
-    app.level5.walls.append(Wall(0, 0, 37, 302))
-    app.level5.walls.append(Wall(18, 227, 65, 75))
-    app.level5.walls.append(Wall(0, 520, 150, 80))
-    app.level5.walls.append(Wall(187, 0, 413, 73))
-    app.level5.walls.append(Wall(525, 72, 75, 193))
 
-    app.level5.walls.append(VanishWall(226, 528, 38, 38))
-    app.level5.walls.append(VanishWall(264, 528, 38, 38))
-    app.level5.walls.append(VanishWall(302, 528, 38, 38))
-    app.level5.walls.append(VanishWall(450, 490, 38, 38))
-    app.level5.walls.append(VanishWall(525, 265, 38, 38))
-    app.level5.walls.append(VanishWall(525, 303, 38, 38))
-
-    app.level5.deaths.append(Death(37, 220, 46, 8))
-    app.level5.springs.append(VanishSpring(450, 482, 38, 8))
-
-    app.level5.recharges.append(Recharge(250, 144, 35, 35)) 
-
-    app.level5.clears.append(Clear(37, 0, 150, 2))
-
+    app.level5.signs.append(Sign('''_TO ALL OF THOSE
+THAT PERISHED ON THE CLIMB
+YOU WILL NOT BE FORGOTTEN''', 293, 176))
+    
+    app.level5.clears.append(Clear(131, 0, 400, 2))
     #Level 6
-    app.level6 = Level(82,407)
+    app.level6 = Level(40, 435)
     app.levels.append(app.level6)
 
-    app.level6.walls.append(Wall(0, 565, 600, 75))
-    app.level6.walls.append(Wall(326, 585, 274, 35))
-    app.level6.walls.append(Wall(0, 0, 70, 200))
-    app.level6.walls.append(Wall(74, 480, 36, 100))
-    app.level6.walls.append(Wall(530, 0, 70, 250))
-    app.level6.walls.append(Wall(190, 0, 600, 70))
-    app.level6.walls.append(Wall(414, 530, 84, 64))
-    app.level6.walls.append(Wall(190, 0, 70, 150))
+    app.level6.walls.append(Wall(0, 0, 37, 302))
+    app.level6.walls.append(Wall(18, 227, 65, 75))
+    app.level6.walls.append(Wall(0, 520, 150, 80))
+    app.level6.walls.append(Wall(187, 0, 413, 73))
+    app.level6.walls.append(Wall(525, 72, 75, 193))
 
-    app.level6.deaths.append(Death(0, 545, 74, 21))
-    app.level6.deaths.append(Death(110, 545, 304, 21))
-    app.level6.deaths.append(Death(498, 545, 102, 21))
+    app.level6.walls.append(VanishWall(226, 528, 38, 38))
+    app.level6.walls.append(VanishWall(264, 528, 38, 38))
+    app.level6.walls.append(VanishWall(302, 528, 38, 38))
+    app.level6.walls.append(VanishWall(450, 490, 38, 38))
+    app.level6.walls.append(VanishWall(525, 265, 38, 38))
+    app.level6.walls.append(VanishWall(525, 303, 38, 38))
 
-    app.level6.springs.append(Spring(414, 519, 84, 11))
+    app.level6.deaths.append(Death(37, 220, 46, 8))
+    app.level6.springs.append(VanishSpring(450, 482, 38, 8))
 
-    app.level6.recharges.append(Recharge(372, 100, 38, 38))
-    app.level6.clears.append(Clear(70, 0, 120, 2))
+    app.level6.recharges.append(Recharge(250, 144, 35, 35)) 
+
+    app.level6.signs.append(Sign('''DARK GRAY PLATFORMS DISSAPEAR
+THEY RESPAWN AFTER A LITTLE BIT
+OR AFTER YOU DIE''', 85, 470))
+
+    app.level6.clears.append(Clear(37, 0, 150, 2))
+
+    #Level 7
+    app.level7 = Level(82,407)
+    app.levels.append(app.level7)
+
+    app.level7.walls.append(Wall(0, 565, 600, 75))
+    app.level7.walls.append(Wall(326, 585, 274, 35))
+    app.level7.walls.append(Wall(0, 0, 70, 200))
+    app.level7.walls.append(Wall(74, 480, 36, 100))
+    app.level7.walls.append(Wall(530, 0, 70, 250))
+    app.level7.walls.append(Wall(190, 0, 600, 70))
+    app.level7.walls.append(Wall(414, 530, 84, 64))
+    app.level7.walls.append(Wall(190, 0, 70, 150))
+
+    app.level7.deaths.append(Death(0, 545, 74, 21))
+    app.level7.deaths.append(Death(110, 545, 304, 21))
+    app.level7.deaths.append(Death(498, 545, 102, 21))
+
+    app.level7.springs.append(Spring(414, 519, 84, 11))
+
+    app.level7.recharges.append(Recharge(372, 100, 38, 38))
+    app.level7.clears.append(Clear(70, 0, 120, 2))
 
 def safeIndex(lst, item):
     return lst.index(item) if item in lst else -1
 
 def redrawAll(app):
-    # drawImage('bad-celeste\images\level6.png', 0, 0, width = 600, height = 600)
+    # drawImage('bad-celeste\images\\tomb.png', 0, 0, width = 600, height = 600)
     if app.inTitle:
         drawRect(0, 0, 600, 600, fill = 'black')
         if app.cover1:
@@ -229,8 +263,9 @@ def redrawAll(app):
             else:
                 drawRect(recharge.x, recharge.y, recharge.sideLength, recharge.sideLength, rotateAngle = 45, fill = rgb(220, 220, 220), align = 'left-top', borderWidth = 2, border = rgb(150, 150, 150))
                 drawRect(recharge.x, recharge.y, recharge.sideLength, recharge.sideLength, rotateAngle = 45, fill = 'lime', align = 'left-top', opacity = recharge.opacity, borderWidth = 2, border = rgb(34, 36, 33))
-        for clear in app.levels[app.currentLevel].clears:
-            drawRect(clear.x, clear.y, clear.width, clear.height, fill = clear.color, opacity = 0)
+        for sign in app.levels[app.currentLevel].signs:
+            drawRect(sign.x, sign.y + 5, 50, 30, fill = sign.color)
+            drawRect(sign.x + 22, sign.y + 30, 5, 20, fill = sign.color)
         if not app.onReset:
             drawRect(app.player.x, app.player.y, app.player.size, app.player.size, fill = app.player.fill, border = 'black', borderWidth = 1.5)
         if app.onReset:
@@ -238,16 +273,20 @@ def redrawAll(app):
             drawRect(app.levels[app.currentLevel].resetX, app.fakeY, app.player.size, app.player.size, fill = app.player.fill, border = 'black', borderWidth = 1.5)
             drawLabel(f'{app.meters} M', 300, 300, font='Bytesized', size=50, fill = 'white')
         for sign in app.levels[app.currentLevel].signs:
-            drawRect(sign.x, sign.y, sign.width, sign.height, fill = sign.color)
             if sign.display:
                 oldCounter = sign.counter
+                lineCounter = -1
+                drawRect(0, 183, 600, 96, fill = 'black')
                 for line in sign.message.splitlines():
-                    for letter in range(len(sign.message)):
+                    lineCounter += 1
+                    letterCounter = -1
+                    for letter in line:
+                        letterCounter += 1
                         if sign.counter >= 0:
-                            if sign.message[letter].isspace():
+                            if letter.isspace():
                                 sign.counter -= 1
                                 continue
-                            drawLabel(sign.message[letter], letter * 20 + 40, 200, font = 'Bytesized', size = 50)
+                            drawLabel(letter, letterCounter * 16 + ((app.width - 16 * len(line)) // 2), 200 + lineCounter * 28, font = 'Bytesized', size = 35, fill = 'white')
                             sign.counter -= 1
                 sign.counter = oldCounter
 
@@ -404,8 +443,10 @@ def checkSign(app):
     for sign in app.levels[app.currentLevel].signs:
                     if app.player.touchingWall(sign):
                         sign.display = True
+                        sign.counter += 1
                     else:
                         sign.display = False
+                        sign.counter = 0
 
 def checkWallVeloColide(app):
     if app.sideWallVelo > 0:
