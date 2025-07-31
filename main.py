@@ -56,10 +56,16 @@ def onAppStart(app):
     app.menu = Sound('sounds/menu.mp3')
     app.game = Sound('sounds/game.mp3')
     app.checkpoint = Sound('sounds/checkpoint.mp3')
+    app.win = Sound('sounds/win.mp3')
+    app.won = False
 
     addLevels(app)
 
 def addLevels(app):
+    # Adds different levels to the levels list
+    # Goes through and adds walls and appends them to each individual wall section in the wall list for the class
+    # Same goes for other attributes of each level
+
     # Level 0
     app.level0 = Level(31, 400)
     app.levels.append(app.level0)
@@ -346,7 +352,7 @@ def safeIndex(lst, item):
     return lst.index(item) if item in lst else -1
 
 def redrawAll(app):
-    drawImage('bad-celeste\images\level13.png', 0, 0, width = 600, height = 600)
+    # If I'm in the title, i draw the cover. Flashes the other cover too occasionaly for effect
     if app.inTitle:
         drawRect(0, 0, 600, 600, fill = 'black')
         if app.cover1:
@@ -354,25 +360,36 @@ def redrawAll(app):
         else:
             drawImage('bad-celeste\images\cover2.png', 0, 0, width = 600, height = 600, opacity = app.coverOpacity)
     else:
-        drawRect(0, 0, 600, 600, fill = rgb(200,200,200))
+    # Otherwise I start drawing everything else
+        drawRect(0, 0, 600, 600, fill = rgb(200, 200, 200))
+        # Draw all the walls
         for wall in app.levels[app.currentLevel].walls:
             if isinstance(wall, VanishWall):
                 drawRect(wall.x, wall.y, wall.width, wall.height, fill = wall.color, opacity = wall.opacity)
             else:
                 drawRect(wall.x, wall.y, wall.width, wall.height, fill = wall.color)
+        # Draw all the deaths
         for death in app.levels[app.currentLevel].deaths:
             drawRect(death.x, death.y, death.width, death.height, fill = death.color)
+        # Draw all the springs
         for spring in app.levels[app.currentLevel].springs:
             if isinstance(spring, VanishSpring):
                 drawRect(spring.x, spring.y, spring.width, spring.height, fill = spring.color, opacity = spring.opacity)
             else:
                 drawRect(spring.x, spring.y, spring.width, spring.height, fill = spring.color)
+        # Draw all the recharges
         for recharge in app.levels[app.currentLevel].recharges:
             if recharge.visible and recharge.opacity == 100:
-                drawRect(recharge.x, recharge.y, recharge.sideLength, recharge.sideLength, rotateAngle = 45, fill = 'lime', align = 'left-top', borderWidth = 2, border = rgb(34, 36, 33))
+                drawRect(recharge.x, recharge.y, recharge.sideLength, recharge.sideLength, rotateAngle = 45, 
+                         fill = 'lime', align = 'left-top', borderWidth = 2, border = rgb(34, 36, 33))
             else:
-                drawRect(recharge.x, recharge.y, recharge.sideLength, recharge.sideLength, rotateAngle = 45, fill = rgb(220, 220, 220), align = 'left-top', borderWidth = 2, border = rgb(150, 150, 150))
-                drawRect(recharge.x, recharge.y, recharge.sideLength, recharge.sideLength, rotateAngle = 45, fill = 'lime', align = 'left-top', opacity = recharge.opacity, borderWidth = 2, border = rgb(34, 36, 33))
+                drawRect(recharge.x, recharge.y, recharge.sideLength, recharge.sideLength, 
+                         rotateAngle = 45, fill = rgb(220, 220, 220), align = 'left-top', 
+                         borderWidth = 2, border = rgb(150, 150, 150))
+                drawRect(recharge.x, recharge.y, recharge.sideLength, recharge.sideLength, 
+                         rotateAngle = 45, fill = 'lime', align = 'left-top', opacity = recharge.opacity, 
+                         borderWidth = 2, border = rgb(34, 36, 33))
+        # Update the end signs and also draw signs differently for specific signs
         for sign in app.levels[app.currentLevel].signs:
             if sign.message == '''_CELESTE MOUNTAIN_
 THIS MEMORIAL TO THOSE
@@ -388,19 +405,25 @@ DEATHS: {app.deaths}
 THANKS FOR PLAYING!'''
                 drawRect(sign.x, sign.y, 5, 50, fill = rgb(150, 87, 21))
                 drawArc(sign.x + 2.5, sign.y, 5, 5, 0, 180, fill = rgb(150, 87, 21))
-                drawPolygon(sign.x + 5, sign.y, sign.x + 5, sign.y + 20, sign.x + 35, sign.y + 10, fill = rgb(88, 168, 27))
+                drawPolygon(sign.x + 5, sign.y, sign.x + 5, sign.y + 20, sign.x + 35, 
+                            sign.y + 10, fill = rgb(88, 168, 27))
             else:
                 drawRect(sign.x, sign.y + 5, 50, 30, fill = sign.color)
                 drawRect(sign.x + 22, sign.y + 30, 5, 20, fill = sign.color)
         if not app.onReset:
-            drawRect(app.player.x, app.player.y, app.player.size, app.player.size, fill = app.player.fill, border = 'black', borderWidth = 1.5)
+            drawRect(app.player.x, app.player.y, app.player.size, app.player.size, 
+                     fill = app.player.fill, border = 'black', borderWidth = 1.5)
         if app.onReset:
             drawRect(175, 265, 250, 70, fill = 'black')
-            drawRect(app.levels[app.currentLevel].resetX, app.fakeY, app.player.size, app.player.size, fill = app.player.fill, border = 'black', borderWidth = 1.5)
+            drawRect(app.levels[app.currentLevel].resetX, app.fakeY, app.player.size, 
+                     app.player.size, fill = app.player.fill, border = 'black', borderWidth = 1.5)
             if app.meters != 1300:
                 drawLabel(f'{app.meters} M', 300, 300, font='Bytesized', size=50, fill = 'white')
             else:
                 drawLabel('SUMMIT', 300, 300, font='Bytesized', size=50, fill = 'white')
+        # Goes through each row of the message in the sign (multiline strings)
+        # Since each character in the font is the same width, you can space them evenly
+        # Reminder to PLEASE check read me to download "bytesized" font or else this will look awful
         for sign in app.levels[app.currentLevel].signs:
             if sign.display:
                 oldCounter = sign.counter
@@ -415,11 +438,14 @@ THANKS FOR PLAYING!'''
                             if letter.isspace():
                                 sign.counter -= 1
                                 continue
-                            drawLabel(letter, letterCounter * 16 + ((app.width - 16 * len(line)) // 2), 187 + lineCounter * 28, font = 'Bytesized', size = 35, fill = 'white')
+                            drawLabel(letter, letterCounter * 16 + ((app.width - 16 * len(line)) // 2), 
+                                      187 + lineCounter * 28, font = 'Bytesized', size = 35, fill = 'white')
                             sign.counter -= 1
                 sign.counter = oldCounter
 
 # --------------- onStep Methods ---------------
+
+# Below are all of the methods I call each step
 
 def checkSong(app):
     if app.currentSong == 0:
@@ -436,6 +462,8 @@ def checkSong(app):
 
 def updatePos(app):
     if not app.onReset:
+        # If I am holding a wall, I slide down it
+        # Also I can't go faster than my terminal velocity in my player class
         app.player.setHoldingWall(app.wayHoldingWall, app.levels[app.currentLevel].walls)
         if abs(app.player.veloX) < 10 or not app.inSideDash: 
             if not app.player.holdingWall or (app.player.holdingWall and app.player.veloY < 0):
@@ -447,6 +475,7 @@ def updatePos(app):
         if abs(app.player.veloX) < 10:
             app.inSideDash = False
 
+# change my x position by velocity of X and don't go into any walls
         app.player.x += app.player.veloX
         for wall in app.levels[app.currentLevel].walls:
             if app.player.touchingWall(wall):
@@ -457,6 +486,7 @@ def updatePos(app):
                     app.player.x = wall.x + wall.width
                 app.player.veloX = 0
 
+# same here but for y
         app.player.y += app.player.veloY
         for wall in app.levels[app.currentLevel].walls:
             if app.player.touchingWall(wall):
@@ -598,6 +628,9 @@ def checkRecharge(app):
 def checkSign(app):
     for sign in app.levels[app.currentLevel].signs:
                     if app.player.touchingWall(sign):
+                        if app.meters == 1300 and not app.won:
+                            app.win.play()
+                            app.won = True
                         sign.display = True
                         sign.counter += 1
                     else:
@@ -605,6 +638,7 @@ def checkSign(app):
                         sign.counter = 0
 
 def checkWallVeloColide(app):
+    # Make sure I don't go into walls when wall jumping off of other walls
     if app.sideWallVelo > 0:
         direction = 1
     else:
@@ -649,6 +683,7 @@ def setColor(app):
         app.player.fill = rgb(41,173,255)
 
 def resetPosAsthetic(app):
+    # Makes me look cool when I start a level or die
     if app.onReset:
         nextStep = False
         if app.fakeY > app.levels[app.currentLevel].resetY + 28:
@@ -671,8 +706,7 @@ def resetPosAsthetic(app):
 
 def checkFinished(app):
     if app.meters >= 1300 and app.finalTime == 0:
-            print('yay')
-            app.finalTime = time.time()
+        app.finalTime = time.time()
 # ----------------------------------------------
 
 def onStep(app):
@@ -718,6 +752,7 @@ def resetHiddenWalls(app):
         spring.timer = 100
 
 def onMousePress(app, mouseX, mouseY):
+    # Draws walls for me that I can copy and paste above in my addLevels function
     if app.counter == 0:
         app.rX = mouseX
         app.rY = mouseY
@@ -744,6 +779,7 @@ def onKeyPress(app, key):
         if not app.onReset:
             if 'c' in key:
                 if app.player.veloY != 0:
+                    # Make sure I don't phase again
                     app.player.x -= 1
                     for wall in app.levels[app.currentLevel].walls:
                         if app.player.touchingWall(wall):
@@ -765,6 +801,7 @@ def onKeyPress(app, key):
                     app.player.x -= 1
                 
                 app.player.jump(app.levels[app.currentLevel].walls, app.jumpHeight)
+            # Set the direction of my dash
             if 'x' in key and not app.hasDashed:
                 app.direction['horizontal'] = 0
                 app.direction['vertical'] = 0
@@ -791,6 +828,7 @@ def onKeyPress(app, key):
         if 'a' in key:
             print(app.player.x, app.player.y)
             print(app.deaths)
+        # Press q to skip levels
         if 'q' in key:
             if app.meters != 1300:
                 app.currentLevel += 1
@@ -819,6 +857,8 @@ def onKeyHold(app, key):
             app.keysHeld.append(i)
     originalX = app.player.x
     if not app.onReset:
+        # Double check which way I'm going
+        # Because keysHeld has a hierarchy of which ones come first I can use this to see which way I'm going
         if not (safeIndex(app.keysHeld, 'left') == -1 and safeIndex(app.keysHeld, 'right') == -1):
             if safeIndex(app.keysHeld, 'left') > safeIndex(app.keysHeld, 'right'):
                 if not app.inWallJump and abs(app.player.veloX) < 10:
@@ -845,9 +885,6 @@ def onKeyHold(app, key):
                         app.player.x = originalX + dx
                         hitWall = False
                         for wall in app.levels[app.currentLevel].walls:
-                            # if app.player.x + app.player.size > app.width:
-                            #     app.player.x = app.width - app.player.size
-                            #     break
                             if app.player.touchingWall(wall):
                                 checkVisibleWall(wall)
                                 hitWall = True
@@ -861,17 +898,6 @@ def onKeyHold(app, key):
                             if app.player.x + app.player.size > app.width:
                                 app.player.x = app.width - app.player.size
                             app.wayHoldingWall['right'] = False
-
-
-    # if 'r' in key:
-    #     app.player.x = app.levels[app.currentLevel].resetX
-    #     app.player.y = app.levels[app.currentLevel].resetY
-    #     app.player.velo = 0
-    #     app.inWallJump = False
-    #     app.inSideDash = False
-    #     app.hasDashed = False
-    #     app.onReset = True
-    #     resetHiddenWalls(app)
 
 def onKeyRelease(app, key):
     if key in app.keysHeld:

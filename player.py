@@ -1,3 +1,5 @@
+# This class is mainly collision stuff
+
 class Player:
     def __init__(self):
         self.x = 31
