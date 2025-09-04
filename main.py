@@ -7,7 +7,7 @@ from death import Death
 from spring import *
 from recharge import Recharge
 from sign import Sign
-from clear import Clear
+from clear import Clear     
 from level import Level
 import time
 
@@ -852,6 +852,19 @@ def onKeyPress(app, key):
                         app.currentSong = 3
                     else:
                         app.currentSong = 1
+        if key == 'r':
+            if app.currentSong == 0:
+                app.menu.pause()
+            elif app.currentSong == 1:
+                app.menu.pause()
+                app.game.pause()
+            elif app.currentSong == 2:
+                app.game.pause()
+                app.checkpoint.pause()
+            elif app.currentSong == 3:
+                app.checkpoint.pause()
+                app.game.pause()
+            onAppStart(app)
 
 def onKeyHold(app, key):
     for i in key:
